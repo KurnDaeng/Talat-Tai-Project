@@ -137,6 +137,7 @@ function showCustomerStore() {
   elements.customerLoginScreen.hidden = isSignedIn;
   elements.customerAccount.hidden = !isSignedIn;
   elements.customerAccountEmail.textContent = currentCustomer?.email || "";
+  document.body.classList.toggle("signed-out", !isSignedIn);
   if (isSignedIn) prefillCustomerForm();
 }
 
@@ -566,6 +567,24 @@ async function saveOrder(reference, receipt) {
       language,
       items: orderItems,
     });
+    // Keep a lightweight local copy so the customer's "My Orders" tab shows it.
+    const localOrders = readJson(ORDERS_STORAGE_KEY, []);
+    localOrders.unshift({
+      reference,
+      createdAt: new Date().toISOString(),
+      status: "receipt_submitted",
+      paymentStatus: "pending_review",
+      paymentMethod: paymentMethodName(selectedPaymentMethod),
+      paymentMethodKey: selectedPaymentMethod,
+      customer: lastCustomerDetails,
+      items: orderItems,
+      subtotal: cartSubtotal(),
+      shipping: shippingCost(),
+      total: cartTotal(),
+      currency: STORE_CONFIG.currency,
+      language,
+    });
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(localOrders));
     products = await CLOUD.getProducts();
     renderProducts();
     return;
@@ -611,7 +630,7 @@ function resetOrder() {
   prefillCustomerForm();
   resetReceiptUpload();
   closeCheckout();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  showPage("orders");
 }
 
 function applyLanguage() {
@@ -626,6 +645,7 @@ function applyLanguage() {
   localStorage.setItem("talat-tai-language", language);
   renderProducts();
   renderCart();
+  renderActivePage();
 }
 
 function showToast(message) {
@@ -722,6 +742,136 @@ elements.finishOrder.addEventListener("click", resetOrder);
 elements.languageSelect.addEventListener("change", (event) => {
   language = event.target.value;
   applyLanguage();
+});
+
+// ===== App tab navigation (Home / Orders / Cash / Profile) =====
+let activePage = "home";
+
+function renderActivePage() {
+  if (activePage === "orders") renderOrders();
+  else if (activePage === "cash") renderCash();
+  else if (activePage === "profile") renderProfile();
+}
+
+function showPage(page) {
+  activePage = page;
+  document.querySelectorAll(".app-page").forEach((el) => {
+    el.classList.toggle("active", el.dataset.page === page);
+  });
+  document.querySelectorAll(".bottom-nav-item").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.page === page);
+  });
+  renderActivePage();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function orderStatusInfo(order) {
+  const status = order.paymentStatus || order.status;
+  if (status === "approved" || status === "paid") {
+    return { cls: "approved", label: text("orderStatusApproved") };
+  }
+  if (status === "rejected" || status === "declined") {
+    return { cls: "rejected", label: text("orderStatusRejected") };
+  }
+  return { cls: "review", label: text("orderStatusReview") };
+}
+
+function customerOrders() {
+  const all = readJson(ORDERS_STORAGE_KEY, []);
+  const email = currentCustomer?.email;
+  if (!email) return all;
+  const mine = all.filter(
+    (order) => (order.customer?.email || "").toLowerCase() === email.toLowerCase(),
+  );
+  return mine.length ? mine : all;
+}
+
+function renderOrders() {
+  const list = document.querySelector("#ordersList");
+  if (!list) return;
+  const orders = customerOrders();
+  if (!orders.length) {
+    list.innerHTML =
+      `<div class="orders-empty"><strong>${text("ordersEmpty")}</strong>` +
+      `<span>${text("ordersEmptyHint")}</span></div>`;
+    return;
+  }
+  list.innerHTML = orders
+    .map((order) => {
+      const info = orderStatusInfo(order);
+      const count = (order.items || []).reduce((n, item) => n + (item.quantity || 0), 0);
+      const date = order.createdAt
+        ? new Date(order.createdAt).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : "";
+      return `
+        <article class="order-card">
+          <div class="order-card-top">
+            <strong>${order.reference}</strong>
+            <span class="order-status ${info.cls}">${info.label}</span>
+          </div>
+          <div class="order-date">${date} · ${count} ${text("orderItemsLabel")}</div>
+          <div class="order-card-foot">
+            <span>${order.paymentMethod || ""}</span>
+            <strong>${money(order.total || 0)}</strong>
+          </div>
+        </article>`;
+    })
+    .join("");
+}
+
+function renderCash() {
+  const wrap = document.querySelector("#cashMethods");
+  if (!wrap) return;
+  wrap.innerHTML = ["thai", "myanmar", "crypto"]
+    .map((key) => {
+      const method = STORE_CONFIG.paymentQr?.[key] || {};
+      const label = paymentMethodName(key);
+      const qr = method.dataUrl
+        ? `<img src="${method.dataUrl}" alt="${label} QR" />`
+        : `<span class="demo-tag">DEMO</span>`;
+      return `
+        <div class="cash-method">
+          <div class="cash-method-qr">${qr}</div>
+          <strong>${label}</strong>
+        </div>`;
+    })
+    .join("");
+}
+
+function renderProfile() {
+  const nameEl = document.querySelector("#profileName");
+  const emailEl = document.querySelector("#profileEmail");
+  const logoutBtn = document.querySelector("#profileLogout");
+  const langSel = document.querySelector("#profileLanguage");
+  if (!nameEl) return;
+  if (currentCustomer?.email) {
+    nameEl.textContent = currentCustomer.name || currentCustomer.email;
+    emailEl.textContent = currentCustomer.email;
+    if (logoutBtn) logoutBtn.hidden = false;
+  } else {
+    nameEl.textContent = text("profileGuest");
+    emailEl.textContent = "";
+    if (logoutBtn) logoutBtn.hidden = true;
+  }
+  if (langSel) langSel.value = language;
+}
+
+document.querySelector("#bottomNav").addEventListener("click", (event) => {
+  const button = event.target.closest(".bottom-nav-item");
+  if (button) showPage(button.dataset.page);
+});
+
+document.querySelector("#profileLanguage").addEventListener("change", (event) => {
+  language = event.target.value;
+  applyLanguage();
+});
+
+document.querySelector("#profileLogout").addEventListener("click", () => {
+  elements.customerLogoutButton.click();
 });
 
 elements.customerForm.addEventListener("submit", async (event) => {

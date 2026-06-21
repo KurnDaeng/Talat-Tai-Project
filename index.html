@@ -82,146 +82,187 @@
       </div>
     </header>
 
-    <main>
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow" data-i18n="heroEyebrow">Small batch. Made with care.</p>
-          <h1 data-i18n="heroTitle">Beautiful things,<br />made close to home.</h1>
-          <p class="hero-description" data-i18n="heroDescription">
-            Thoughtful everyday goods from independent Thai makers, selected for their craft,
-            story, and lasting quality.
-          </p>
-          <a class="primary-button" href="#shop" data-i18n="shopCollection">Shop the collection</a>
-          <div class="hero-proof">
-            <div>
-              <strong>100%</strong>
-              <span data-i18n="thaiMade">Thai made</span>
+    <main class="app-main">
+      <!-- ===== HOME ===== -->
+      <section class="app-page active" id="page-home" data-page="home">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow" data-i18n="heroEyebrow">Small batch. Made with care.</p>
+            <h1 data-i18n="heroTitle">Beautiful things,<br />made close to home.</h1>
+            <p class="hero-description" data-i18n="heroDescription">
+              Thoughtful everyday goods from independent Thai makers, selected for their craft,
+              story, and lasting quality.
+            </p>
+            <a class="primary-button" href="#shop" data-i18n="shopCollection">Shop the collection</a>
+            <div class="hero-proof">
+              <div>
+                <strong>100%</strong>
+                <span data-i18n="thaiMade">Thai made</span>
+              </div>
+              <div>
+                <strong>2-4</strong>
+                <span data-i18n="deliveryDays">day delivery</span>
+              </div>
+              <div>
+                <strong>QR</strong>
+                <span data-i18n="securePayment">secure payment</span>
+              </div>
             </div>
-            <div>
-              <strong>2-4</strong>
-              <span data-i18n="deliveryDays">day delivery</span>
+          </div>
+          <div class="hero-visual" aria-label="Handmade ceramic collection">
+            <div class="sun-shape"></div>
+            <div class="vase vase-back">
+              <div class="vase-neck"></div>
             </div>
-            <div>
-              <strong>QR</strong>
-              <span data-i18n="securePayment">secure payment</span>
+            <div class="vase vase-front">
+              <div class="vase-neck"></div>
+              <span class="vase-line line-one"></span>
+              <span class="vase-line line-two"></span>
+            </div>
+            <div class="leaf-stem stem-one">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="leaf-stem stem-two">
+              <span></span><span></span>
+            </div>
+            <div class="hero-note">
+              <span>01</span>
+              <p data-i18n="heroNote">Crafted by a family studio in Chiang Mai</p>
             </div>
           </div>
-        </div>
-        <div class="hero-visual" aria-label="Handmade ceramic collection">
-          <div class="sun-shape"></div>
-          <div class="vase vase-back">
-            <div class="vase-neck"></div>
-          </div>
-          <div class="vase vase-front">
-            <div class="vase-neck"></div>
-            <span class="vase-line line-one"></span>
-            <span class="vase-line line-two"></span>
-          </div>
-          <div class="leaf-stem stem-one">
-            <span></span><span></span><span></span>
-          </div>
-          <div class="leaf-stem stem-two">
-            <span></span><span></span>
-          </div>
-          <div class="hero-note">
-            <span>01</span>
-            <p data-i18n="heroNote">Crafted by a family studio in Chiang Mai</p>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="marquee" aria-label="Store qualities">
-        <div>
-          <span data-i18n="marqueeOne">Independent makers</span>
-          <i></i>
-          <span data-i18n="marqueeTwo">Natural materials</span>
-          <i></i>
-          <span data-i18n="marqueeThree">Made in Thailand</span>
-          <i></i>
-          <span data-i18n="marqueeFour">Mindful packaging</span>
-        </div>
-      </section>
-
-      <section class="products-section" id="shop">
-        <div class="section-heading">
+        <section class="marquee" aria-label="Store qualities">
           <div>
-            <p class="eyebrow" data-i18n="collectionEyebrow">The first collection</p>
-            <h2 data-i18n="collectionTitle">Objects worth keeping</h2>
+            <span data-i18n="marqueeOne">Independent makers</span>
+            <i></i>
+            <span data-i18n="marqueeTwo">Natural materials</span>
+            <i></i>
+            <span data-i18n="marqueeThree">Made in Thailand</span>
+            <i></i>
+            <span data-i18n="marqueeFour">Mindful packaging</span>
           </div>
-          <div class="filter-row" id="filterRow" aria-label="Filter products">
-            <button class="filter active" data-filter="all" type="button" data-i18n="filterAll">All</button>
-            <button class="filter" data-filter="home" type="button" data-i18n="filterHome">Home</button>
-            <button class="filter" data-filter="wear" type="button" data-i18n="filterWear">Wear</button>
-            <button class="filter" data-filter="gift" type="button" data-i18n="filterGifts">Gifts</button>
-            <button class="filter" data-filter="food" type="button" data-i18n="filterFood">Food</button>
-            <button class="filter filter-favorites" data-filter="favorites" type="button" data-i18n="filterFavorites">Favorites</button>
+        </section>
+
+        <section class="products-section" id="shop">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow" data-i18n="collectionEyebrow">The first collection</p>
+              <h2 data-i18n="collectionTitle">Objects worth keeping</h2>
+            </div>
+            <div class="filter-row" id="filterRow" aria-label="Filter products">
+              <button class="filter active" data-filter="all" type="button" data-i18n="filterAll">All</button>
+              <button class="filter" data-filter="home" type="button" data-i18n="filterHome">Home</button>
+              <button class="filter" data-filter="wear" type="button" data-i18n="filterWear">Wear</button>
+              <button class="filter" data-filter="gift" type="button" data-i18n="filterGifts">Gifts</button>
+              <button class="filter" data-filter="food" type="button" data-i18n="filterFood">Food</button>
+              <button class="filter filter-favorites" data-filter="favorites" type="button" data-i18n="filterFavorites">Favorites</button>
+            </div>
           </div>
-        </div>
-        <div class="product-grid" id="productGrid"></div>
+          <div class="product-grid" id="productGrid"></div>
+        </section>
       </section>
 
-      <section class="story-section" id="story">
-        <div class="story-art" aria-hidden="true">
-          <div class="weave weave-one"></div>
-          <div class="weave weave-two"></div>
-          <div class="weave weave-three"></div>
-          <div class="story-stamp">TH<br />06</div>
+      <!-- ===== MY ORDERS ===== -->
+      <section class="app-page" id="page-orders" data-page="orders">
+        <div class="page-intro">
+          <h2 data-i18n="ordersTitle">My Orders</h2>
+          <p data-i18n="ordersSubtitle">Track the orders you have submitted.</p>
         </div>
-        <div class="story-copy">
+        <div class="orders-list" id="ordersList"></div>
+      </section>
+
+      <!-- ===== CASH / PAYMENT ===== -->
+      <section class="app-page" id="page-cash" data-page="cash">
+        <div class="page-intro">
+          <h2 data-i18n="cashTitle">Payment methods</h2>
+          <p data-i18n="cashIntro">
+            At checkout, scan a QR to pay, then upload your receipt for the seller to review.
+          </p>
+        </div>
+        <div class="cash-methods" id="cashMethods"></div>
+        <div class="cash-note">
+          <span aria-hidden="true">🚚</span>
+          <p data-i18n="cashShippingNote">Free delivery in Thailand for orders over ฿1,500.</p>
+        </div>
+      </section>
+
+      <!-- ===== PROFILE ===== -->
+      <section class="app-page" id="page-profile" data-page="profile">
+        <div class="profile-head">
+          <img class="profile-avatar" src="assets/talat-tai-logo.png" alt="" />
+          <div>
+            <strong id="profileName" data-i18n="profileGuest">Guest</strong>
+            <span id="profileEmail"></span>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <h3 data-i18n="accountSection">Account</h3>
+          <label class="profile-row">
+            <span data-i18n="languageLabel">Language</span>
+            <select class="profile-language" id="profileLanguage" aria-label="Choose language">
+              <option value="en">English</option>
+              <option value="th">ไทย</option>
+              <option value="mm">မြန်မာ</option>
+            </select>
+          </label>
+          <button class="secondary-button full-width" id="profileLogout" type="button" data-i18n="customerLogout" hidden>
+            Log out
+          </button>
+        </div>
+
+        <div class="profile-card">
+          <h3 data-i18n="aboutSection">About us</h3>
           <p class="eyebrow" data-i18n="storyEyebrow">A more personal way to shop</p>
-          <h2 data-i18n="storyTitle">Every purchase keeps a craft alive.</h2>
           <p data-i18n="storyBody">
             We work directly with small studios and family businesses. That means fair prices
             for makers, honest materials, and objects with a real human story behind them.
           </p>
-          <a href="#shop" class="text-link">
-            <span data-i18n="meetMakers">Meet our makers</span>
-            <span aria-hidden="true">→</span>
-          </a>
+          <ul class="profile-values">
+            <li>
+              <strong data-i18n="valueOneTitle">Made in small batches</strong>
+              <span data-i18n="valueOneBody">Less waste, more attention, and no anonymous factory lines.</span>
+            </li>
+            <li>
+              <strong data-i18n="valueTwoTitle">Flexible bank transfer checkout</strong>
+              <span data-i18n="valueTwoBody">Choose Thai QR, Myanmar QR, or crypto payment.</span>
+            </li>
+            <li>
+              <strong data-i18n="valueThreeTitle">Packed with intention</strong>
+              <span data-i18n="valueThreeBody">Plastic-light packaging that is ready to give or keep.</span>
+            </li>
+          </ul>
         </div>
-      </section>
 
-      <section class="values-section" id="values">
-        <article>
-          <span class="value-number">01</span>
-          <h3 data-i18n="valueOneTitle">Made in small batches</h3>
-          <p data-i18n="valueOneBody">Less waste, more attention, and no anonymous factory lines.</p>
-        </article>
-        <article>
-          <span class="value-number">02</span>
-          <h3 data-i18n="valueTwoTitle">Flexible bank transfer checkout</h3>
-          <p data-i18n="valueTwoBody">Choose Thai QR, Myanmar QR, or crypto payment.</p>
-        </article>
-        <article>
-          <span class="value-number">03</span>
-          <h3 data-i18n="valueThreeTitle">Packed with intention</h3>
-          <p data-i18n="valueThreeBody">Plastic-light packaging that is ready to give or keep.</p>
-        </article>
+        <div class="profile-card">
+          <h3 data-i18n="helpSection">Help</h3>
+          <a href="mailto:hello@example.com" data-i18n="contact">Contact</a>
+          <a href="#" data-i18n="shipping">Shipping &amp; returns</a>
+        </div>
+
+        <p class="copyright">© <span id="year"></span> TALAT TAI</p>
       </section>
     </main>
 
-    <footer>
-      <div class="footer-brand">
-        <a class="brand brand-light" href="#">
-          <img class="brand-logo" src="assets/talat-tai-logo.png" alt="" />
-          <span>TALAT TAI</span>
-        </a>
-        <p data-i18n="footerLine">Good objects. Good stories. Made here.</p>
-      </div>
-      <div class="footer-links">
-        <div>
-          <strong data-i18n="footerShop">Shop</strong>
-          <a href="#shop" data-i18n="navShop">Shop</a>
-          <a href="#story" data-i18n="navStory">Our story</a>
-        </div>
-        <div>
-          <strong data-i18n="footerHelp">Help</strong>
-          <a href="mailto:hello@example.com" data-i18n="contact">Contact</a>
-          <a href="#" data-i18n="shipping">Shipping & returns</a>
-        </div>
-      </div>
-      <p class="copyright">© <span id="year"></span> TALAT TAI</p>
-    </footer>
+    <nav class="bottom-nav" aria-label="Main navigation" id="bottomNav">
+      <button class="bottom-nav-item active" data-page="home" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" /><path d="M5 10v9h14v-9" /></svg>
+        <span data-i18n="navHome">Home</span>
+      </button>
+      <button class="bottom-nav-item" data-page="orders" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2" /><path d="M9 7h6M9 11h6M9 15h4" /></svg>
+        <span data-i18n="navOrders">My Orders</span>
+      </button>
+      <button class="bottom-nav-item" data-page="cash" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2" /><path d="M3 10h18" /><circle cx="17" cy="14" r="1.3" /></svg>
+        <span data-i18n="navCash">Cash</span>
+      </button>
+      <button class="bottom-nav-item" data-page="profile" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>
+        <span data-i18n="navProfile">Profile</span>
+      </button>
+    </nav>
 
     <div class="drawer-backdrop" id="drawerBackdrop"></div>
     <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-labelledby="cartTitle">
