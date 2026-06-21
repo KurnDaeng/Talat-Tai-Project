@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="TALAT TAI admin dashboard" />
+    <title>TALAT TAI Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="assets/talat-tai-logo.png" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <section class="login-screen" id="loginScreen">
+      <div class="login-card">
+        <img src="assets/talat-tai-logo.png" alt="TALAT TAI logo" />
+        <p class="eyebrow">Admin prototype</p>
+        <h1>Manage TALAT TAI</h1>
+        <p class="login-note">
+          This is a local admin demo. Real production login must use a secure backend.
+        </p>
+        <form id="loginForm">
+          <label>
+            Admin email
+            <input name="email" type="email" autocomplete="username" required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" autocomplete="current-password" value="talat2026" required />
+          </label>
+          <button class="primary-button" type="submit">Enter admin</button>
+          <p class="demo-login">Use the secure administrator account connected to Supabase.</p>
+          <p class="form-error" id="loginError"></p>
+        </form>
+      </div>
+    </section>
+
+    <main class="admin-shell" id="adminShell" hidden>
+      <aside class="sidebar">
+        <a class="admin-brand" href="admin.html">
+          <img src="assets/talat-tai-logo.png" alt="" />
+          <span>TALAT TAI</span>
+        </a>
+        <nav aria-label="Admin navigation">
+          <a href="#overview">Overview</a>
+          <a href="#products">Products</a>
+          <a href="#orders">Orders</a>
+          <a href="#storefront">Storefront</a>
+          <a href="#settings">Settings</a>
+        </nav>
+        <div class="sidebar-actions">
+          <a class="ghost-button" href="index.html">View store</a>
+          <button class="ghost-button" id="logoutButton" type="button">Log out</button>
+        </div>
+      </aside>
+
+      <section class="dashboard">
+        <header class="admin-header" id="overview">
+          <div>
+            <p class="eyebrow">Owner dashboard</p>
+            <h1>Control your storefront</h1>
+          </div>
+          <div class="admin-warning">
+            Local prototype. Use a real database before taking live orders.
+          </div>
+        </header>
+
+        <section class="stats-grid" id="statsGrid" aria-label="Store statistics"></section>
+
+        <section class="panel" id="products">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Products</p>
+              <h2>Catalog manager</h2>
+            </div>
+            <button class="secondary-button" id="newProductButton" type="button">New product</button>
+          </div>
+
+          <div class="admin-grid">
+            <form class="editor-card" id="productForm">
+              <input type="hidden" name="id" />
+              <h3 id="productFormTitle">Add product</h3>
+              <div class="form-columns">
+                <div class="product-photo-field full-field">
+                  <span class="field-label">Product photo</span>
+                  <label class="product-photo-upload" for="productPhotoInput">
+                    <strong>Choose product photo</strong>
+                    <small>JPG, PNG, or WebP. The image will be resized automatically.</small>
+                    <input id="productPhotoInput" type="file" accept="image/*" />
+                  </label>
+                  <div class="product-photo-preview" id="productPhotoPreview" hidden>
+                    <img id="productPhotoPreviewImage" alt="Product photo preview" />
+                    <div>
+                      <span id="productPhotoName"></span>
+                      <button class="ghost-button danger" id="removeProductPhotoButton" type="button">
+                        Remove photo
+                      </button>
+                    </div>
+                  </div>
+                  <p class="product-photo-status" id="productPhotoStatus">No product photo selected.</p>
+                </div>
+                <label>
+                  English name
+                  <input name="nameEn" required />
+                </label>
+                <label>
+                  Thai name
+                  <input name="nameTh" required />
+                </label>
+                <label class="full-field">
+                  Myanmar name
+                  <input name="nameMm" required />
+                </label>
+                <label>
+                  English maker
+                  <input name="makerEn" required />
+                </label>
+                <label>
+                  Thai maker
+                  <input name="makerTh" required />
+                </label>
+                <label class="full-field">
+                  Myanmar maker
+                  <input name="makerMm" required />
+                </label>
+                <label>
+                  Price THB
+                  <input name="price" type="number" min="0" step="1" required />
+                </label>
+                <label>
+                  Stock
+                  <input name="stock" type="number" min="0" step="1" required />
+                </label>
+                <label>
+                  English badge
+                  <input name="badgeEn" required />
+                </label>
+                <label>
+                  Thai badge
+                  <input name="badgeTh" required />
+                </label>
+                <label class="full-field">
+                  Myanmar badge
+                  <input name="badgeMm" required />
+                </label>
+                <label>
+                  Product shape
+                  <select name="shape">
+                    <option value="mug">Mug</option>
+                    <option value="bag">Bag</option>
+                    <option value="candle">Candle</option>
+                    <option value="scarf">Scarf</option>
+                    <option value="food">Food</option>
+                  </select>
+                </label>
+                <label>
+                  Card color
+                  <input name="background" type="color" required />
+                </label>
+                <label>
+                  Object color
+                  <input name="color" type="color" required />
+                </label>
+                <label class="check-field">
+                  <input name="active" type="checkbox" />
+                  Show in store
+                </label>
+              </div>
+              <fieldset class="category-field">
+                <legend>Categories</legend>
+                <label><input name="category" type="checkbox" value="home" /> Home</label>
+                <label><input name="category" type="checkbox" value="wear" /> Wear</label>
+                <label><input name="category" type="checkbox" value="gift" /> Gift</label>
+                <label><input name="category" type="checkbox" value="food" /> Food</label>
+              </fieldset>
+              <div class="button-row">
+                <button class="primary-button" type="submit">Save product</button>
+                <button class="ghost-button" id="cancelEditButton" type="button">Cancel</button>
+              </div>
+            </form>
+
+            <div class="table-card">
+              <div class="table-scroller">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Stock</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="productsTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="orders">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Orders</p>
+              <h2>Order control</h2>
+            </div>
+            <button class="secondary-button" id="exportButton" type="button">Export data</button>
+          </div>
+          <div class="table-card">
+            <div class="table-scroller">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Receipt</th>
+                    <th>Payment</th>
+                    <th>Fulfillment</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== STOREFRONT EDITOR ===== -->
+        <section class="panel" id="storefront">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Storefront</p>
+              <h2>Storefront editor</h2>
+            </div>
+            <button class="primary-button" id="saveBrandButton" type="button">Save changes</button>
+          </div>
+
+          <!-- Brand -->
+          <div class="settings-card brand-editor-card">
+            <p class="eyebrow">Brand</p>
+            <h3>Store identity</h3>
+            <div class="form-columns">
+              <label class="full-field">
+                Store name
+                <input id="brandStoreName" type="text" placeholder="TALAT TAI" />
+              </label>
+              <label class="full-field">
+                Contact email
+                <input id="brandEmail" type="email" placeholder="hello@example.com" />
+              </label>
+              <div class="full-field product-photo-field">
+                <span class="field-label">Store logo</span>
+                <label class="product-photo-upload" for="brandLogoInput">
+                  <strong>Choose logo image</strong>
+                  <small>PNG or SVG recommended. Square images work best.</small>
+                  <input id="brandLogoInput" type="file" accept="image/*" />
+                </label>
+                <div class="product-photo-preview" id="brandLogoPreview" hidden>
+                  <img id="brandLogoPreviewImage" alt="Logo preview" />
+                  <div>
+                    <span id="brandLogoName"></span>
+                    <button class="ghost-button danger" id="removeBrandLogoButton" type="button">Remove logo</button>
+                  </div>
+                </div>
+                <p class="product-photo-status" id="brandLogoStatus">No logo uploaded — default logo in use.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colors -->
+          <div class="settings-card brand-editor-card">
+            <p class="eyebrow">Colors</p>
+            <h3>Theme colors</h3>
+            <p class="muted">Changes preview in real time. Save to apply across the storefront.</p>
+            <div class="color-picker-grid">
+              <label class="color-picker-item">
+                <span class="color-swatch" id="swatchGreen" style="background:#17533e"></span>
+                <span>
+                  <strong>Primary</strong>
+                  <small>Buttons &amp; nav</small>
+                </span>
+                <input id="colorGreen" type="color" value="#17533e" />
+              </label>
+              <label class="color-picker-item">
+                <span class="color-swatch" id="swatchGold" style="background:#e0b433"></span>
+                <span>
+                  <strong>Accent</strong>
+                  <small>Gold highlights</small>
+                </span>
+                <input id="colorGold" type="color" value="#e0b433" />
+              </label>
+              <label class="color-picker-item">
+                <span class="color-swatch" id="swatchPaper" style="background:#f7edcf"></span>
+                <span>
+                  <strong>Background</strong>
+                  <small>Page background</small>
+                </span>
+                <input id="colorPaper" type="color" value="#f7edcf" />
+              </label>
+              <label class="color-picker-item">
+                <span class="color-swatch" id="swatchInk" style="background:#27170f"></span>
+                <span>
+                  <strong>Text</strong>
+                  <small>Main text color</small>
+                </span>
+                <input id="colorInk" type="color" value="#27170f" />
+              </label>
+              <label class="color-picker-item">
+                <span class="color-swatch" id="swatchTerracotta" style="background:#aa3027"></span>
+                <span>
+                  <strong>Highlight</strong>
+                  <small>Badges &amp; tags</small>
+                </span>
+                <input id="colorTerracotta" type="color" value="#aa3027" />
+              </label>
+            </div>
+            <div class="button-row" style="margin-top:1rem">
+              <button class="ghost-button" id="resetColorsButton" type="button">Reset to defaults</button>
+            </div>
+          </div>
+
+          <!-- Text editor -->
+          <div class="settings-card brand-editor-card">
+            <p class="eyebrow">Text</p>
+            <h3>Storefront copy</h3>
+            <p class="muted">Edit the text that appears on your storefront in each language.</p>
+            <div class="lang-tabs" id="brandLangTabs">
+              <button class="lang-tab active" data-lang="en" type="button">English</button>
+              <button class="lang-tab" data-lang="th" type="button">ภาษาไทย</button>
+              <button class="lang-tab" data-lang="mm" type="button">မြန်မာ</button>
+            </div>
+            <div id="brandTextFields"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="settings">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Settings</p>
+              <h2>Store settings</h2>
+            </div>
+          </div>
+          <form class="settings-card" id="settingsForm">
+            <label>
+              Shipping fee THB
+              <input name="shippingFee" type="number" min="0" step="1" required />
+            </label>
+            <label>
+              Free shipping from THB
+              <input name="freeShippingAt" type="number" min="0" step="1" required />
+            </label>
+            <div class="button-row">
+              <button class="primary-button" type="submit">Save settings</button>
+              <button class="ghost-button danger" id="resetProductsButton" type="button">Reset products</button>
+              <button class="ghost-button danger" id="clearOrdersButton" type="button">Clear orders</button>
+            </div>
+          </form>
+
+          <div class="qr-settings-card">
+            <div>
+              <p class="eyebrow">Payment QR codes</p>
+              <h3>Upload customer payment codes</h3>
+              <p class="muted">Upload one image for each method. The storefront will show these at checkout.</p>
+            </div>
+            <div class="qr-settings-grid">
+              <article class="qr-admin-card" data-qr-card="thai">
+                <h4>1. Thai QR</h4>
+                <div class="qr-admin-preview" id="thaiQrPreview">No QR uploaded</div>
+                <label class="qr-upload-button">
+                  Upload Thai QR
+                  <input id="thaiQrInput" type="file" accept="image/*" />
+                </label>
+                <button class="ghost-button" type="button" data-remove-qr="thai">Remove</button>
+              </article>
+              <article class="qr-admin-card" data-qr-card="myanmar">
+                <h4>2. Myanmar QR</h4>
+                <div class="qr-admin-preview" id="myanmarQrPreview">No QR uploaded</div>
+                <label class="qr-upload-button">
+                  Upload Myanmar QR
+                  <input id="myanmarQrInput" type="file" accept="image/*" />
+                </label>
+                <button class="ghost-button" type="button" data-remove-qr="myanmar">Remove</button>
+              </article>
+              <article class="qr-admin-card" data-qr-card="crypto">
+                <h4>3. Crypto payment</h4>
+                <div class="qr-admin-preview" id="cryptoQrPreview">No QR uploaded</div>
+                <label class="qr-upload-button">
+                  Upload crypto QR
+                  <input id="cryptoQrInput" type="file" accept="image/*" />
+                </label>
+                <button class="ghost-button" type="button" data-remove-qr="crypto">Remove</button>
+              </article>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="adminToast" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cloud-config.js"></script>
+    <script src="cloud-data.js"></script>
+    <script src="store-data.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="TALAT TAI, a warm and modern storefront for independent Thai products."
+    />
+    <title>TALAT TAI | Thoughtful goods from Thailand</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="assets/talat-tai-logo.png" />
+    <link rel="apple-touch-icon" href="assets/talat-tai-logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="customer-login-screen" id="customerLoginScreen">
+      <div class="customer-login-card">
+        <img src="assets/talat-tai-logo.png" alt="TALAT TAI logo" />
+        <p class="eyebrow" data-i18n="customerLoginEyebrow">Welcome to TALAT TAI</p>
+        <h1 data-i18n="customerLoginTitle">Sign in before shopping</h1>
+        <p data-i18n="customerLoginBody">
+          Enter your name and email so your orders and payment receipts stay connected to you.
+        </p>
+        <form id="customerLoginForm">
+          <label>
+            <span data-i18n="fullName">Full name</span>
+            <input name="name" autocomplete="name" required placeholder="Your name" />
+          </label>
+          <label>
+            <span data-i18n="email">Email</span>
+            <input name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+          </label>
+          <button class="primary-button full-width" id="customerLoginButton" type="submit" data-i18n="customerLoginButton">
+            Send secure login link
+          </button>
+        </form>
+        <p class="customer-login-note" id="customerLoginStatus" data-i18n="customerLoginNote">
+          We will email you a secure link to enter the store.
+        </p>
+      </div>
+    </section>
+
+    <div class="announcement">
+      <span data-i18n="announcement">Free delivery in Thailand for orders over ฿1,500</span>
+      <select class="language-select" id="languageSelect" aria-label="Choose language">
+        <option value="en">English</option>
+        <option value="th">ไทย</option>
+        <option value="mm">မြန်မာ</option>
+      </select>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="TALAT TAI home">
+        <img class="brand-logo" src="assets/talat-tai-logo.png" alt="" />
+        <span>TALAT TAI</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a href="#shop" data-i18n="navShop">Shop</a>
+        <a href="#story" data-i18n="navStory">Our story</a>
+        <a href="#values" data-i18n="navValues">Why us</a>
+      </nav>
+      <div class="header-actions">
+        <div class="customer-account" id="customerAccount" hidden>
+          <span id="customerAccountEmail"></span>
+          <button id="customerLogoutButton" type="button" data-i18n="customerLogout">Log out</button>
+        </div>
+        <button class="cart-button" id="cartButton" type="button" aria-label="Open shopping cart">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 3h2l2.2 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 6H6" />
+            <circle cx="10" cy="20" r="1" />
+            <circle cx="18" cy="20" r="1" />
+          </svg>
+          <span data-i18n="cart">Cart</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow" data-i18n="heroEyebrow">Small batch. Made with care.</p>
+          <h1 data-i18n="heroTitle">Beautiful things,<br />made close to home.</h1>
+          <p class="hero-description" data-i18n="heroDescription">
+            Thoughtful everyday goods from independent Thai makers, selected for their craft,
+            story, and lasting quality.
+          </p>
+          <a class="primary-button" href="#shop" data-i18n="shopCollection">Shop the collection</a>
+          <div class="hero-proof">
+            <div>
+              <strong>100%</strong>
+              <span data-i18n="thaiMade">Thai made</span>
+            </div>
+            <div>
+              <strong>2-4</strong>
+              <span data-i18n="deliveryDays">day delivery</span>
+            </div>
+            <div>
+              <strong>QR</strong>
+              <span data-i18n="securePayment">secure payment</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Handmade ceramic collection">
+          <div class="sun-shape"></div>
+          <div class="vase vase-back">
+            <div class="vase-neck"></div>
+          </div>
+          <div class="vase vase-front">
+            <div class="vase-neck"></div>
+            <span class="vase-line line-one"></span>
+            <span class="vase-line line-two"></span>
+          </div>
+          <div class="leaf-stem stem-one">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="leaf-stem stem-two">
+            <span></span><span></span>
+          </div>
+          <div class="hero-note">
+            <span>01</span>
+            <p data-i18n="heroNote">Crafted by a family studio in Chiang Mai</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="marquee" aria-label="Store qualities">
+        <div>
+          <span data-i18n="marqueeOne">Independent makers</span>
+          <i></i>
+          <span data-i18n="marqueeTwo">Natural materials</span>
+          <i></i>
+          <span data-i18n="marqueeThree">Made in Thailand</span>
+          <i></i>
+          <span data-i18n="marqueeFour">Mindful packaging</span>
+        </div>
+      </section>
+
+      <section class="products-section" id="shop">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow" data-i18n="collectionEyebrow">The first collection</p>
+            <h2 data-i18n="collectionTitle">Objects worth keeping</h2>
+          </div>
+          <div class="filter-row" id="filterRow" aria-label="Filter products">
+            <button class="filter active" data-filter="all" type="button" data-i18n="filterAll">All</button>
+            <button class="filter" data-filter="home" type="button" data-i18n="filterHome">Home</button>
+            <button class="filter" data-filter="wear" type="button" data-i18n="filterWear">Wear</button>
+            <button class="filter" data-filter="gift" type="button" data-i18n="filterGifts">Gifts</button>
+            <button class="filter" data-filter="food" type="button" data-i18n="filterFood">Food</button>
+          </div>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+      </section>
+
+      <section class="story-section" id="story">
+        <div class="story-art" aria-hidden="true">
+          <div class="weave weave-one"></div>
+          <div class="weave weave-two"></div>
+          <div class="weave weave-three"></div>
+          <div class="story-stamp">TH<br />06</div>
+        </div>
+        <div class="story-copy">
+          <p class="eyebrow" data-i18n="storyEyebrow">A more personal way to shop</p>
+          <h2 data-i18n="storyTitle">Every purchase keeps a craft alive.</h2>
+          <p data-i18n="storyBody">
+            We work directly with small studios and family businesses. That means fair prices
+            for makers, honest materials, and objects with a real human story behind them.
+          </p>
+          <a href="#shop" class="text-link">
+            <span data-i18n="meetMakers">Meet our makers</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="values-section" id="values">
+        <article>
+          <span class="value-number">01</span>
+          <h3 data-i18n="valueOneTitle">Made in small batches</h3>
+          <p data-i18n="valueOneBody">Less waste, more attention, and no anonymous factory lines.</p>
+        </article>
+        <article>
+          <span class="value-number">02</span>
+          <h3 data-i18n="valueTwoTitle">Flexible bank transfer checkout</h3>
+          <p data-i18n="valueTwoBody">Choose Thai QR, Myanmar QR, or crypto payment.</p>
+        </article>
+        <article>
+          <span class="value-number">03</span>
+          <h3 data-i18n="valueThreeTitle">Packed with intention</h3>
+          <p data-i18n="valueThreeBody">Plastic-light packaging that is ready to give or keep.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-brand">
+        <a class="brand brand-light" href="#">
+          <img class="brand-logo" src="assets/talat-tai-logo.png" alt="" />
+          <span>TALAT TAI</span>
+        </a>
+        <p data-i18n="footerLine">Good objects. Good stories. Made here.</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <strong data-i18n="footerShop">Shop</strong>
+          <a href="#shop" data-i18n="navShop">Shop</a>
+          <a href="#story" data-i18n="navStory">Our story</a>
+        </div>
+        <div>
+          <strong data-i18n="footerHelp">Help</strong>
+          <a href="mailto:hello@example.com" data-i18n="contact">Contact</a>
+          <a href="#" data-i18n="shipping">Shipping & returns</a>
+        </div>
+      </div>
+      <p class="copyright">© <span id="year"></span> TALAT TAI</p>
+    </footer>
+
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-labelledby="cartTitle">
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow" data-i18n="yourOrder">Your order</p>
+          <h2 id="cartTitle" data-i18n="cart">Cart</h2>
+        </div>
+        <button class="icon-button" id="closeCart" type="button" aria-label="Close cart">×</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="empty-cart" id="emptyCart">
+        <img class="empty-logo" src="assets/talat-tai-logo.png" alt="TALAT TAI logo" />
+        <h3 data-i18n="emptyTitle">Your cart is waiting</h3>
+        <p data-i18n="emptyBody">Add something made with care.</p>
+        <button class="secondary-button" id="continueShopping" type="button" data-i18n="continueShopping">
+          Continue shopping
+        </button>
+      </div>
+      <div class="cart-summary" id="cartSummary">
+        <div class="summary-line">
+          <span data-i18n="subtotal">Subtotal</span>
+          <strong id="cartSubtotal">฿0</strong>
+        </div>
+        <p class="shipping-note" data-i18n="shippingAtCheckout">Shipping calculated at checkout</p>
+        <button class="primary-button full-width" id="checkoutButton" type="button" data-i18n="checkout">
+          Checkout
+        </button>
+      </div>
+    </aside>
+
+    <div class="modal-backdrop" id="checkoutBackdrop"></div>
+    <section class="checkout-modal" id="checkoutModal" aria-hidden="true" aria-labelledby="checkoutTitle">
+      <div class="checkout-topbar">
+        <a class="brand" href="#">
+          <img class="brand-logo" src="assets/talat-tai-logo.png" alt="" />
+          <span>TALAT TAI</span>
+        </a>
+        <button class="icon-button" id="closeCheckout" type="button" aria-label="Close checkout">×</button>
+      </div>
+
+      <div class="checkout-layout">
+        <div class="checkout-main">
+          <div class="checkout-progress" aria-label="Checkout progress">
+            <span class="progress-step active" data-step="1">1</span>
+            <i></i>
+            <span class="progress-step" data-step="2">2</span>
+            <i></i>
+            <span class="progress-step" data-step="3">3</span>
+          </div>
+
+          <form id="customerForm" class="checkout-step active" data-checkout-step="1">
+            <p class="eyebrow" data-i18n="stepOne">Step 1 of 3</p>
+            <h2 id="checkoutTitle" data-i18n="deliveryDetails">Delivery details</h2>
+            <div class="form-grid">
+              <label>
+                <span data-i18n="fullName">Full name</span>
+                <input name="name" autocomplete="name" required placeholder="Narin S." />
+              </label>
+              <label>
+                <span data-i18n="phone">Phone number</span>
+                <input name="phone" type="tel" autocomplete="tel" required placeholder="08X XXX XXXX" />
+              </label>
+              <label class="full-field">
+                <span data-i18n="email">Email</span>
+                <input name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+              </label>
+              <label class="full-field">
+                <span data-i18n="address">Address</span>
+                <input name="address" autocomplete="street-address" required placeholder="House, building, street" />
+              </label>
+              <label>
+                <span data-i18n="district">District</span>
+                <input name="district" required placeholder="Watthana" />
+              </label>
+              <label>
+                <span data-i18n="province">Province</span>
+                <input name="province" required placeholder="Bangkok" />
+              </label>
+              <label>
+                <span data-i18n="postcode">Postcode</span>
+                <input name="postcode" inputmode="numeric" pattern="[0-9]{5}" required placeholder="10110" />
+              </label>
+            </div>
+            <button class="primary-button full-width" type="submit" data-i18n="continuePayment">
+              Continue to payment
+            </button>
+          </form>
+
+          <div class="checkout-step" data-checkout-step="2">
+            <p class="eyebrow" data-i18n="stepTwo">Step 2 of 3</p>
+            <h2 data-i18n="scanPay">Scan to pay</h2>
+            <p class="checkout-intro" data-i18n="scanInstructions">
+              Choose a payment method, scan its QR, then upload your receipt.
+            </p>
+            <div class="payment-methods" id="paymentMethods" aria-label="Choose payment method">
+              <button class="active" type="button" data-payment-method="thai">Thai QR</button>
+              <button type="button" data-payment-method="myanmar">Myanmar QR</button>
+              <button type="button" data-payment-method="crypto">Crypto</button>
+            </div>
+            <div class="qr-payment-card">
+              <div class="thai-qr-header">
+                <strong>BANK TRANSFER</strong>
+              </div>
+              <div class="qr-code" id="qrCode" aria-label="Bank transfer QR code">
+                <img id="paymentQrImage" alt="Selected payment QR code" hidden />
+                <div id="paymentQrPlaceholder">
+                  <div class="qr-placeholder" aria-hidden="true"></div>
+                  <div class="qr-demo-label">DEMO</div>
+                </div>
+              </div>
+              <p class="merchant-name" id="paymentMethodLabel">Thai QR</p>
+              <strong class="qr-total" id="qrTotal">฿0</strong>
+            </div>
+            <div class="demo-warning">
+              <strong data-i18n="demoTitle">Manual payment review</strong>
+              <span data-i18n="demoBody">Confirm the QR details before paying. The seller will review your receipt.</span>
+            </div>
+
+            <div class="receipt-upload-card">
+              <label class="receipt-drop" for="receiptUpload">
+                <span data-i18n="receiptTitle">Upload receipt photo</span>
+                <strong data-i18n="receiptBrowse">Choose image</strong>
+                <small data-i18n="receiptHint">Upload your bank slip so the seller can check payment.</small>
+                <input id="receiptUpload" type="file" accept="image/*" />
+              </label>
+              <div class="receipt-preview" id="receiptPreview" hidden>
+                <img id="receiptPreviewImage" alt="Payment receipt preview" />
+                <span id="receiptFileName"></span>
+              </div>
+              <p class="receipt-status" id="receiptStatus" data-i18n="receiptEmpty">
+                No receipt uploaded yet.
+              </p>
+            </div>
+
+            <button class="primary-button full-width" id="submitReceipt" type="button" data-i18n="submitReceipt" disabled>
+              Submit receipt for review
+            </button>
+            <button class="back-button" id="backToDetails" type="button" data-i18n="backDetails">
+              ← Back to delivery details
+            </button>
+          </div>
+
+          <div class="checkout-step success-step" data-checkout-step="3">
+            <div class="success-mark">✓</div>
+            <p class="eyebrow" data-i18n="paymentConfirmed">Payment confirmed</p>
+            <h2 data-i18n="thankYou">Thank you for your order.</h2>
+            <p data-i18n="confirmationBody">
+              We have received your order and will send delivery updates by email.
+            </p>
+            <div class="order-reference">
+              <span data-i18n="orderNumber">Order number</span>
+              <strong id="orderNumber">TT-000000</strong>
+            </div>
+            <button class="primary-button full-width" id="finishOrder" type="button" data-i18n="continueShopping">
+              Continue shopping
+            </button>
+          </div>
+        </div>
+
+        <aside class="checkout-summary">
+          <h3 data-i18n="orderSummary">Order summary</h3>
+          <div id="checkoutItems"></div>
+          <div class="checkout-totals">
+            <div>
+              <span data-i18n="subtotal">Subtotal</span>
+              <strong id="checkoutSubtotal">฿0</strong>
+            </div>
+            <div>
+              <span data-i18n="delivery">Delivery</span>
+              <strong id="checkoutShipping">฿0</strong>
+            </div>
+            <div class="total-line">
+              <span data-i18n="total">Total</span>
+              <strong id="checkoutTotal">฿0</strong>
+            </div>
+          </div>
+          <div class="payment-trust">
+            <span>✓</span>
+            <p data-i18n="paymentTrust">Payment status should be verified securely by your payment server.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cloud-config.js"></script>
+    <script src="cloud-data.js"></script>
+    <script src="store-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
