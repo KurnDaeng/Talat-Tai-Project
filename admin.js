@@ -953,14 +953,27 @@ function renderTextFields(lang) {
   const container = elements.brandTextFields;
   container.innerHTML = "";
 
-  TEXT_GROUPS.forEach((groupDef) => {
-    const group = document.createElement("div");
-    group.className = "brand-text-group";
+  TEXT_GROUPS.forEach((groupDef, groupIndex) => {
+    const editedCount = groupDef.fields.filter((f) => texts[f.key]).length;
 
-    const heading = document.createElement("h4");
-    heading.className = "brand-text-group-title";
-    heading.textContent = groupDef.title;
-    group.appendChild(heading);
+    const group = document.createElement("section");
+    group.className = "brand-text-group";
+    // Open the first section by default; keep the rest collapsed for a tidy view.
+    group.dataset.open = groupIndex === 0 ? "true" : "false";
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "brand-text-group-toggle";
+    toggle.setAttribute("aria-expanded", group.dataset.open);
+    toggle.innerHTML =
+      `<span class="brand-text-group-title">${escapeHtml(groupDef.title)}</span>` +
+      `<span class="brand-text-group-meta">` +
+      `<span class="brand-text-group-count"${editedCount ? "" : " hidden"}>${editedCount} edited</span>` +
+      `<span class="brand-text-group-chevron" aria-hidden="true">▾</span></span>`;
+    group.appendChild(toggle);
+
+    const body = document.createElement("div");
+    body.className = "brand-text-group-body";
 
     groupDef.fields.forEach(({ key, label, type }) => {
       const lbl = document.createElement("label");
@@ -978,9 +991,10 @@ function renderTextFields(lang) {
       if (fallback) field.placeholder = `Default: ${fallback}`;
       lbl.textContent = label;
       lbl.appendChild(field);
-      group.appendChild(lbl);
+      body.appendChild(lbl);
     });
 
+    group.appendChild(body);
     container.appendChild(group);
   });
 
@@ -1067,6 +1081,16 @@ async function initBrandEditor() {
     if (!tab) return;
     collectTextFields();
     renderTextFields(tab.dataset.lang);
+  });
+
+  // Collapsible text sections (accordion) to keep the editor tidy.
+  elements.brandTextFields.addEventListener("click", (e) => {
+    const toggle = e.target.closest(".brand-text-group-toggle");
+    if (!toggle) return;
+    const group = toggle.closest(".brand-text-group");
+    const open = group.dataset.open === "true";
+    group.dataset.open = open ? "false" : "true";
+    toggle.setAttribute("aria-expanded", String(!open));
   });
 }
 
