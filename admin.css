@@ -849,6 +849,19 @@ th {
   gap: 14px;
 }
 
+.brand-text-group + .brand-text-group {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.brand-text-group-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 .brand-text-group label {
   display: flex;
   flex-direction: column;

@@ -30,18 +30,10 @@ const DEFAULT_COLORS = {
   terracotta: "#aa3027",
 };
 
-const TEXT_FIELD_DEFS = [
-  { key: "announcement", label: "Announcement bar", type: "input" },
-  { key: "heroEyebrow", label: "Hero eyebrow", type: "input" },
-  { key: "heroTitle", label: "Hero title", type: "input" },
-  { key: "heroDescription", label: "Hero description", type: "textarea" },
-  { key: "collectionEyebrow", label: "Collection eyebrow", type: "input" },
-  { key: "collectionTitle", label: "Collection title", type: "input" },
-  { key: "storyEyebrow", label: "Story eyebrow", type: "input" },
-  { key: "storyTitle", label: "Story title", type: "input" },
-  { key: "storyBody", label: "Story body", type: "textarea" },
-  { key: "footerLine", label: "Footer tagline", type: "input" },
-];
+// Grouped, labelled field map covering every visible storefront string.
+// Sourced from translations.js so the editor and storefront stay in sync.
+const TEXT_GROUPS = window.TALAT_TAI_TEXT_GROUPS || [];
+const STORE_TRANSLATIONS = window.TALAT_TAI_TRANSLATIONS || { en: {}, th: {}, mm: {} };
 
 let brand = readJson(BRAND_KEY, {
   storeName: "",
@@ -961,28 +953,36 @@ function renderTextFields(lang) {
   const container = elements.brandTextFields;
   container.innerHTML = "";
 
-  const group = document.createElement("div");
-  group.className = "brand-text-group";
+  TEXT_GROUPS.forEach((groupDef) => {
+    const group = document.createElement("div");
+    group.className = "brand-text-group";
 
-  TEXT_FIELD_DEFS.forEach(({ key, label, type }) => {
-    const lbl = document.createElement("label");
-    let field;
-    if (type === "textarea") {
-      field = document.createElement("textarea");
-      field.rows = 3;
-    } else {
-      field = document.createElement("input");
-      field.type = "text";
-    }
-    field.dataset.textKey = key;
-    field.value = texts[key] || "";
-    field.placeholder = `Default: ${getDefaultText(lang, key)}`;
-    lbl.textContent = label;
-    lbl.appendChild(field);
-    group.appendChild(lbl);
+    const heading = document.createElement("h4");
+    heading.className = "brand-text-group-title";
+    heading.textContent = groupDef.title;
+    group.appendChild(heading);
+
+    groupDef.fields.forEach(({ key, label, type }) => {
+      const lbl = document.createElement("label");
+      let field;
+      if (type === "textarea") {
+        field = document.createElement("textarea");
+        field.rows = 3;
+      } else {
+        field = document.createElement("input");
+        field.type = "text";
+      }
+      field.dataset.textKey = key;
+      field.value = texts[key] || "";
+      const fallback = getDefaultText(lang, key);
+      if (fallback) field.placeholder = `Default: ${fallback}`;
+      lbl.textContent = label;
+      lbl.appendChild(field);
+      group.appendChild(lbl);
+    });
+
+    container.appendChild(group);
   });
-
-  container.appendChild(group);
 
   // Update tab active state
   elements.brandLangTabs.querySelectorAll(".lang-tab").forEach(tab => {
@@ -991,8 +991,8 @@ function renderTextFields(lang) {
 }
 
 function getDefaultText(lang, key) {
-  // Pull from the app translations if accessible; otherwise return placeholder
-  return "...";
+  // Show the real shipped wording so the seller knows what they are replacing.
+  return STORE_TRANSLATIONS[lang]?.[key] || STORE_TRANSLATIONS.en?.[key] || "";
 }
 
 function collectTextFields() {
@@ -1000,7 +1000,15 @@ function collectTextFields() {
   if (!brand.texts) brand.texts = {};
   if (!brand.texts[lang]) brand.texts[lang] = {};
   elements.brandTextFields.querySelectorAll("[data-text-key]").forEach(field => {
-    brand.texts[lang][field.dataset.textKey] = field.value.trim();
+    const key = field.dataset.textKey;
+    const value = field.value.trim();
+    // Only store real overrides. Empty fields fall back to the shipped default
+    // on the storefront, so clearing a field restores the original wording.
+    if (value) {
+      brand.texts[lang][key] = value;
+    } else {
+      delete brand.texts[lang][key];
+    }
   });
 }
 
