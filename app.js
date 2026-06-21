@@ -129,14 +129,15 @@ function prefillCustomerForm() {
   if (!currentCustomer) return;
   const fields = elements.customerForm.elements;
   fields.name.value = currentCustomer.name || fields.name.value;
-  fields.email.value = currentCustomer.email || fields.email.value;
+  if (fields.phone) fields.phone.value = currentCustomer.phone || fields.phone.value;
+  if (fields.email && currentCustomer.email) fields.email.value = currentCustomer.email;
 }
 
 function showCustomerStore() {
-  const isSignedIn = Boolean(currentCustomer?.email);
+  const isSignedIn = Boolean(currentCustomer?.name);
   elements.customerLoginScreen.hidden = isSignedIn;
   elements.customerAccount.hidden = !isSignedIn;
-  elements.customerAccountEmail.textContent = currentCustomer?.email || "";
+  elements.customerAccountEmail.textContent = currentCustomer?.name || "";
   document.body.classList.toggle("signed-out", !isSignedIn);
   if (isSignedIn) prefillCustomerForm();
 }
@@ -558,7 +559,18 @@ async function saveOrder(reference, receipt) {
     })
     .filter(Boolean);
 
+  // Only use the cloud order flow when a real Supabase session exists. With the
+  // simple name+phone sign-in there is no session, so orders are saved locally.
+  let cloudSession = null;
   if (CLOUD.enabled) {
+    try {
+      cloudSession = await CLOUD.getSession();
+    } catch {
+      cloudSession = null;
+    }
+  }
+
+  if (CLOUD.enabled && cloudSession) {
     await CLOUD.createOrder({
       reference,
       receipt,
@@ -655,33 +667,28 @@ function showToast(message) {
   toastTimer = setTimeout(() => elements.toast.classList.remove("show"), 2200);
 }
 
-elements.customerLoginForm.addEventListener("submit", async (event) => {
+elements.customerLoginForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const details = Object.fromEntries(new FormData(event.currentTarget));
-  if (CLOUD.enabled) {
-    elements.customerLoginButton.disabled = true;
-    elements.customerLoginStatus.textContent = text("customerLoginSending");
-    try {
-      await CLOUD.sendMagicLink(details.email.trim().toLowerCase(), details.name.trim());
-      elements.customerLoginStatus.textContent = text("customerLoginSent");
-    } catch (error) {
-      elements.customerLoginStatus.textContent = error.message;
-    } finally {
-      elements.customerLoginButton.disabled = false;
-    }
-    return;
-  }
+  // Simple local sign-in: just a name and phone number, saved on this device.
   currentCustomer = {
     name: details.name.trim(),
-    email: details.email.trim().toLowerCase(),
+    phone: (details.phone || "").trim(),
     signedInAt: new Date().toISOString(),
   };
   localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(currentCustomer));
   showCustomerStore();
+  showPage("home");
 });
 
 elements.customerLogoutButton.addEventListener("click", async () => {
-  if (CLOUD.enabled) await CLOUD.signOut();
+  if (CLOUD.enabled) {
+    try {
+      await CLOUD.signOut();
+    } catch {
+      /* ignore: simple sign-in has no cloud session */
+    }
+  }
   currentCustomer = null;
   lastCustomerDetails = {};
   localStorage.removeItem(CUSTOMER_STORAGE_KEY);
@@ -778,11 +785,9 @@ function orderStatusInfo(order) {
 
 function customerOrders() {
   const all = readJson(ORDERS_STORAGE_KEY, []);
-  const email = currentCustomer?.email;
-  if (!email) return all;
-  const mine = all.filter(
-    (order) => (order.customer?.email || "").toLowerCase() === email.toLowerCase(),
-  );
+  const phone = currentCustomer?.phone;
+  if (!phone) return all;
+  const mine = all.filter((order) => (order.customer?.phone || "") === phone);
   return mine.length ? mine : all;
 }
 
@@ -848,9 +853,9 @@ function renderProfile() {
   const logoutBtn = document.querySelector("#profileLogout");
   const langSel = document.querySelector("#profileLanguage");
   if (!nameEl) return;
-  if (currentCustomer?.email) {
-    nameEl.textContent = currentCustomer.name || currentCustomer.email;
-    emailEl.textContent = currentCustomer.email;
+  if (currentCustomer?.name) {
+    nameEl.textContent = currentCustomer.name;
+    emailEl.textContent = currentCustomer.phone || currentCustomer.email || "";
     if (logoutBtn) logoutBtn.hidden = false;
   } else {
     nameEl.textContent = text("profileGuest");
@@ -906,15 +911,16 @@ async function initializeStorefront() {
       ]);
       products = cloudProducts;
       Object.assign(STORE_CONFIG, cloudSettings);
+      // Prefer a real cloud session; otherwise keep the simple local sign-in.
       currentCustomer = session
         ? {
             id: session.user.id,
             email: session.user.email,
             name: session.user.user_metadata?.name || "",
           }
-        : null;
+        : readJson(CUSTOMER_STORAGE_KEY, null);
     } catch (error) {
-      currentCustomer = null;
+      currentCustomer = readJson(CUSTOMER_STORAGE_KEY, null);
       showToast(`Cloud connection: ${error.message}`);
     }
   }
