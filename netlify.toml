@@ -1,0 +1,18 @@
+# Netlify configuration for the TALAT TAI storefront.
+# Mirrors vercel.json: clean URLs + the same security headers.
+
+[build]
+  publish = "."
+
+# Serve admin.html at the clean /admin path (matches Vercel cleanUrls).
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
