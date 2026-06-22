@@ -1176,7 +1176,7 @@ footer {
 .drawer-backdrop,
 .modal-backdrop {
   position: fixed;
-  z-index: 50;
+  z-index: 80;
   inset: 0;
   background: rgba(39, 23, 15, 0.56);
   opacity: 0;
@@ -1192,7 +1192,7 @@ footer {
 
 .cart-drawer {
   position: fixed;
-  z-index: 55;
+  z-index: 90;
   top: 0;
   right: 0;
   display: flex;
@@ -1369,7 +1369,7 @@ footer {
 
 .checkout-modal {
   position: fixed;
-  z-index: 60;
+  z-index: 95;
   inset: 3vh 3vw;
   overflow: hidden;
   border-radius: 5px;
