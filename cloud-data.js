@@ -107,7 +107,26 @@
       shippingFee: Number(settingsRow?.shipping_fee ?? 60),
       freeShippingAt: Number(settingsRow?.free_shipping_at ?? 1500),
       paymentQr,
+      social: {
+        facebook: settingsRow?.social_facebook || "",
+        line: settingsRow?.social_line || "",
+        telegram: settingsRow?.social_telegram || "",
+        viber: settingsRow?.social_viber || "",
+      },
     };
+  }
+
+  async function saveSocial(social) {
+    requireCloud();
+    const { error } = await client.from("store_settings").upsert({
+      id: true,
+      social_facebook: social?.facebook || null,
+      social_line: social?.line || null,
+      social_telegram: social?.telegram || null,
+      social_viber: social?.viber || null,
+      updated_at: new Date().toISOString(),
+    });
+    if (error) throw error;
   }
 
   async function getSession() {
@@ -310,6 +329,7 @@
     saveProduct,
     deleteProduct,
     saveSettings,
+    saveSocial,
     savePaymentQr,
     updateOrder,
     reviewOrder,

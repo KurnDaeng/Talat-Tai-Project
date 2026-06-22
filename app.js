@@ -1026,7 +1026,13 @@ function renderSocialLinks(brand) {
   const card = document.querySelector("#socialCard");
   const wrap = document.querySelector("#socialLinks");
   if (!card || !wrap) return;
+  // Precedence: cloud settings (shared with all customers) > this device's
+  // brand override > committed defaults.
   const social = { ...DEFAULT_SOCIAL, ...(brand?.social || {}) };
+  const cloudSocial = STORE_CONFIG.social || {};
+  SOCIAL_PLATFORMS.forEach((platform) => {
+    if (cloudSocial[platform.key]) social[platform.key] = cloudSocial[platform.key];
+  });
   const items = SOCIAL_PLATFORMS.map((platform) => ({
     ...platform,
     href: socialHref(platform.key, social[platform.key]),

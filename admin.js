@@ -1191,7 +1191,7 @@ async function initBrandEditor() {
 
   renderBrandForm();
 
-  elements.saveBrandButton.addEventListener("click", () => {
+  elements.saveBrandButton.addEventListener("click", async () => {
     collectTextFields();
     brand.storeName = elements.brandStoreName.value.trim();
     brand.contactEmail = elements.brandEmail.value.trim();
@@ -1202,6 +1202,19 @@ async function initBrandEditor() {
       if (input && input.value.trim()) brand.social[key] = input.value.trim();
     });
     saveBrand();
+    // Sync contact links to the cloud so every customer sees them.
+    if (CLOUD.enabled && CLOUD.saveSocial) {
+      try {
+        await CLOUD.saveSocial(brand.social);
+        showToast("Saved. Contact links are now live for all customers.");
+        return;
+      } catch (error) {
+        showToast(
+          "Saved on this device. To publish contact links to everyone, add the social columns in Supabase first.",
+        );
+        return;
+      }
+    }
     showToast("Storefront settings saved. Refresh the store to see changes.");
   });
 
