@@ -129,6 +129,36 @@
     if (error) throw error;
   }
 
+  async function createAdmin(email, password) {
+    requireCloud();
+    const cleanEmail = String(email || "").trim().toLowerCase();
+    // Create the auth user on a throwaway client so the signed-in admin's
+    // session is not replaced by the new user's session.
+    if (window.supabase?.createClient) {
+      const temp = window.supabase.createClient(
+        config.supabaseUrl,
+        config.supabasePublishableKey,
+      );
+      const { error: signUpError } = await temp.auth.signUp({
+        email: cleanEmail,
+        password,
+      });
+      if (signUpError && !/already|registered|exists/i.test(signUpError.message)) {
+        throw signUpError;
+      }
+    }
+    // Promote the user to admin (the RPC verifies the caller is an admin).
+    const { error } = await client.rpc("promote_to_admin", { target_email: cleanEmail });
+    if (error) throw error;
+  }
+
+  async function listAdmins() {
+    requireCloud();
+    const { data, error } = await client.rpc("list_admins");
+    if (error) throw error;
+    return data || [];
+  }
+
   async function getSession() {
     if (!client) return null;
     const { data, error } = await client.auth.getSession();
@@ -333,5 +363,7 @@
     savePaymentQr,
     updateOrder,
     reviewOrder,
+    createAdmin,
+    listAdmins,
   };
 })();

@@ -171,6 +171,61 @@ async function showDashboard() {
   initBrandEditor();
   initAdminNav();
   startOrderNotifications();
+  initAdminTeam();
+}
+
+// ===== Admin team management =====
+async function initAdminTeam() {
+  const card = document.querySelector("#adminTeamCard");
+  const form = document.querySelector("#addAdminForm");
+  if (!card || !form) return;
+  if (!CLOUD.enabled || !CLOUD.createAdmin) {
+    card.hidden = true;
+    return;
+  }
+  card.hidden = false;
+  if (!form.dataset.bound) {
+    form.dataset.bound = "1";
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const status = document.querySelector("#addAdminStatus");
+      const submitButton = form.querySelector('button[type="submit"]');
+      const data = Object.fromEntries(new FormData(form));
+      status.textContent = "";
+      submitButton.disabled = true;
+      try {
+        await CLOUD.createAdmin(data.email, data.password);
+        form.reset();
+        showToast("Admin added.");
+        await renderAdminList();
+      } catch (error) {
+        status.textContent = error.message || "Could not add admin.";
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  }
+  renderAdminList();
+}
+
+async function renderAdminList() {
+  const list = document.querySelector("#adminList");
+  if (!list || !CLOUD.listAdmins) return;
+  try {
+    const admins = await CLOUD.listAdmins();
+    if (!admins.length) {
+      list.innerHTML = "";
+      return;
+    }
+    list.innerHTML =
+      `<p class="field-label">Current admins</p>` +
+      admins
+        .map((admin) => `<div class="admin-list-row"><span>${escapeHtml(admin.email || "")}</span></div>`)
+        .join("");
+  } catch {
+    list.innerHTML =
+      `<p class="field-label">Run the admin SQL functions in Supabase to list and add your team.</p>`;
+  }
 }
 
 function showLogin() {

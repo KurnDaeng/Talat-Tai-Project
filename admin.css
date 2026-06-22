@@ -1011,3 +1011,26 @@ th {
 .panel.admin-page {
   margin-top: 0;
 }
+
+/* ===== Admin team management ===== */
+.admin-team-card {
+  margin-top: 18px;
+}
+
+.admin-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.admin-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+}

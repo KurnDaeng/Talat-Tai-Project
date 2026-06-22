@@ -423,6 +423,31 @@
               </article>
             </div>
           </div>
+
+          <div class="qr-settings-card admin-team-card" id="adminTeamCard" hidden>
+            <div>
+              <p class="eyebrow">Team</p>
+              <h3>Admin accounts</h3>
+              <p class="muted">Add another person who can sign in to this dashboard with their email and password.</p>
+            </div>
+            <form class="settings-card" id="addAdminForm">
+              <div class="form-columns">
+                <label>
+                  Admin email
+                  <input name="email" type="email" required placeholder="newadmin@example.com" />
+                </label>
+                <label>
+                  Temporary password
+                  <input name="password" type="text" required minlength="6" placeholder="At least 6 characters" />
+                </label>
+              </div>
+              <div class="button-row">
+                <button class="primary-button" type="submit">Add admin</button>
+              </div>
+              <p class="form-error" id="addAdminStatus"></p>
+            </form>
+            <div class="admin-list" id="adminList"></div>
+          </div>
         </section>
       </section>
     </main>
