@@ -45,12 +45,12 @@
           <img src="assets/talat-tai-logo.png" alt="" />
           <span>TALAT TAI</span>
         </a>
-        <nav aria-label="Admin navigation">
-          <a href="#overview">Overview</a>
-          <a href="#products">Products</a>
-          <a href="#orders">Orders</a>
-          <a href="#storefront">Storefront</a>
-          <a href="#settings">Settings</a>
+        <nav aria-label="Admin navigation" id="adminNav">
+          <a href="#overview" data-page="overview" class="active">Overview</a>
+          <a href="#products" data-page="products">Products</a>
+          <a href="#orders" data-page="orders">Orders</a>
+          <a href="#storefront" data-page="storefront">Storefront</a>
+          <a href="#settings" data-page="settings">Settings</a>
         </nav>
         <div class="sidebar-actions">
           <a class="ghost-button" href="index.html">View store</a>
@@ -59,19 +59,18 @@
       </aside>
 
       <section class="dashboard">
-        <header class="admin-header" id="overview">
-          <div>
-            <p class="eyebrow">Owner dashboard</p>
-            <h1>Control your storefront</h1>
-          </div>
-          <div class="admin-warning">
-            Local prototype. Use a real database before taking live orders.
-          </div>
-        </header>
+        <div class="admin-page active" id="page-overview" data-page="overview">
+          <header class="admin-header" id="overview">
+            <div>
+              <p class="eyebrow">Owner dashboard</p>
+              <h1>Control your storefront</h1>
+            </div>
+          </header>
 
-        <section class="stats-grid" id="statsGrid" aria-label="Store statistics"></section>
+          <section class="stats-grid" id="statsGrid" aria-label="Store statistics"></section>
+        </div>
 
-        <section class="panel" id="products">
+        <section class="panel admin-page" id="products" data-page="products">
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Products</p>
@@ -202,7 +201,7 @@
           </div>
         </section>
 
-        <section class="panel" id="orders">
+        <section class="panel admin-page" id="orders" data-page="orders">
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Orders</p>
@@ -231,7 +230,7 @@
         </section>
 
         <!-- ===== STOREFRONT EDITOR ===== -->
-        <section class="panel" id="storefront">
+        <section class="panel admin-page" id="storefront" data-page="storefront">
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Storefront</p>
@@ -338,7 +337,7 @@
           </div>
         </section>
 
-        <section class="panel" id="settings">
+        <section class="panel admin-page" id="settings" data-page="settings">
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Settings</p>

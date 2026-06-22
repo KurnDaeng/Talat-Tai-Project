@@ -169,11 +169,134 @@ async function showDashboard() {
   }
   renderAll();
   initBrandEditor();
+  initAdminNav();
+  startOrderNotifications();
 }
 
 function showLogin() {
   elements.loginScreen.hidden = false;
   elements.adminShell.hidden = true;
+}
+
+// ===== Admin tab navigation =====
+function initAdminNav() {
+  const nav = document.querySelector("#adminNav");
+  if (!nav || nav.dataset.bound) return;
+  nav.dataset.bound = "1";
+  nav.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-page]");
+    if (!link) return;
+    event.preventDefault();
+    showAdminPage(link.dataset.page);
+  });
+}
+
+function showAdminPage(page) {
+  document.querySelectorAll(".admin-page").forEach((el) => {
+    el.classList.toggle("active", el.dataset.page === page);
+  });
+  document.querySelectorAll("#adminNav a[data-page]").forEach((link) => {
+    link.classList.toggle("active", link.dataset.page === page);
+  });
+  const dash = document.querySelector(".dashboard");
+  if (dash) dash.scrollTop = 0;
+  window.scrollTo({ top: 0 });
+}
+
+// ===== Order notifications =====
+let knownOrderRefs = null;
+let orderNotifyTimer = null;
+
+function pendingOrderCount() {
+  return orders.filter((order) => order.paymentStatus === "pending_review").length;
+}
+
+function updateOrderBadge() {
+  const link = document.querySelector('#adminNav a[data-page="orders"]');
+  if (!link) return;
+  let badge = link.querySelector(".nav-badge");
+  const count = pendingOrderCount();
+  if (count > 0) {
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "nav-badge";
+      link.appendChild(badge);
+    }
+    badge.textContent = count;
+  } else if (badge) {
+    badge.remove();
+  }
+}
+
+async function fetchLatestOrders() {
+  if (CLOUD.enabled) return CLOUD.getOrders();
+  return readJson(ORDER_KEY, []);
+}
+
+function playOrderBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.42);
+  } catch {
+    /* audio unavailable */
+  }
+}
+
+function notifyNewOrders(newOnes) {
+  const first = newOnes[0];
+  showToast(
+    newOnes.length > 1
+      ? `🔔 ${newOnes.length} new orders received`
+      : `🔔 New order ${first.reference} · ${money(first.total || 0)}`,
+  );
+  playOrderBeep();
+  if (window.Notification && Notification.permission === "granted") {
+    try {
+      new Notification("TALAT TAI — New order", {
+        body:
+          newOnes.length > 1
+            ? `${newOnes.length} new orders need review`
+            : `${first.reference} · ${money(first.total || 0)}`,
+        icon: "assets/talat-tai-logo.png",
+      });
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+function startOrderNotifications() {
+  knownOrderRefs = new Set(orders.map((order) => order.reference));
+  if (window.Notification && Notification.permission === "default") {
+    Notification.requestPermission().catch(() => {});
+  }
+  if (orderNotifyTimer) clearInterval(orderNotifyTimer);
+  orderNotifyTimer = setInterval(async () => {
+    let fresh;
+    try {
+      fresh = await fetchLatestOrders();
+    } catch {
+      return;
+    }
+    const newOnes = fresh.filter((order) => !knownOrderRefs.has(order.reference));
+    if (newOnes.length) {
+      orders = fresh;
+      newOnes.forEach((order) => knownOrderRefs.add(order.reference));
+      renderStats();
+      renderOrders();
+      notifyNewOrders(newOnes);
+    }
+  }, 20000);
 }
 
 function renderAll() {
@@ -326,6 +449,7 @@ function renderOrders() {
       `;
     })
     .join("");
+  updateOrderBadge();
 }
 
 function renderSettings() {

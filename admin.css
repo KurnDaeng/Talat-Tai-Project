@@ -944,3 +944,70 @@ th {
 .brand-text-group textarea {
   min-height: 80px;
 }
+
+/* ===== Admin tab pages + order notifications ===== */
+.admin-page {
+  display: none;
+}
+
+.admin-page.active {
+  display: block;
+  animation: admin-page-fade 0.2s ease;
+}
+
+@keyframes admin-page-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The Storefront editor has Brand/Colors/Text cards; when active keep block flow */
+#storefront.admin-page.active {
+  display: block;
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 0 8px 8px 0;
+}
+
+.sidebar nav a.active {
+  color: var(--white);
+  border-color: var(--gold);
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 600;
+}
+
+.nav-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 100px;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* On small screens the sidebar nav becomes a horizontal row of tabs */
+@media (max-width: 1050px) {
+  .sidebar nav a {
+    justify-content: center;
+    border-left: 0;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .sidebar nav a.active {
+    border-color: transparent;
+  }
+}
+
+/* Tab pages start flush at the top of the dashboard */
+.panel.admin-page {
+  margin-top: 0;
+}

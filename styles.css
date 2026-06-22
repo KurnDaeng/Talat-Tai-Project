@@ -625,7 +625,7 @@ h1 {
 }
 
 .products-section {
-  padding: 120px 6vw 130px;
+  padding: 34px 6vw 120px;
   background: linear-gradient(180deg, var(--paper) 0%, #f1dfad 100%);
 }
 
@@ -2069,7 +2069,7 @@ body.locked {
   }
 
   .products-section {
-    padding: 85px 18px 100px;
+    padding: 24px 18px 90px;
   }
 
   .section-heading {
