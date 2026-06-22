@@ -201,21 +201,43 @@ function showAdminPage(page) {
   const dash = document.querySelector(".dashboard");
   if (dash) dash.scrollTop = 0;
   window.scrollTo({ top: 0 });
+  // Opening the Orders tab clears the new-order notification badge.
+  if (page === "orders") markAllOrdersSeen();
 }
 
 // ===== Order notifications =====
 let knownOrderRefs = null;
 let orderNotifyTimer = null;
 
-function pendingOrderCount() {
-  return orders.filter((order) => order.paymentStatus === "pending_review").length;
+const SEEN_ORDERS_KEY = "talat-tai-admin-seen-orders";
+
+function getSeenOrders() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(SEEN_ORDERS_KEY)) || []);
+  } catch {
+    return new Set();
+  }
+}
+
+function markAllOrdersSeen() {
+  localStorage.setItem(SEEN_ORDERS_KEY, JSON.stringify(orders.map((order) => order.reference)));
+  updateOrderBadge();
+}
+
+// Badge counts only NEW pending orders the admin has not opened yet, so it
+// clears as soon as the Orders tab is viewed.
+function newOrderCount() {
+  const seen = getSeenOrders();
+  return orders.filter(
+    (order) => order.paymentStatus === "pending_review" && !seen.has(order.reference),
+  ).length;
 }
 
 function updateOrderBadge() {
   const link = document.querySelector('#adminNav a[data-page="orders"]');
   if (!link) return;
   let badge = link.querySelector(".nav-badge");
-  const count = pendingOrderCount();
+  const count = newOrderCount();
   if (count > 0) {
     if (!badge) {
       badge = document.createElement("span");
@@ -1011,12 +1033,25 @@ function saveBrand() {
   localStorage.setItem(BRAND_KEY, JSON.stringify(brand));
 }
 
+const SOCIAL_KEYS = ["facebook", "line", "telegram", "viber"];
+
+function socialInput(key) {
+  return document.querySelector(`#social${key.charAt(0).toUpperCase()}${key.slice(1)}`);
+}
+
 function renderBrandForm() {
   if (!elements.brandStoreName) return;
 
   // Populate brand identity fields
   elements.brandStoreName.value = brand.storeName || "";
   elements.brandEmail.value = brand.contactEmail || "";
+
+  // Social links
+  const social = brand.social || {};
+  SOCIAL_KEYS.forEach((key) => {
+    const input = socialInput(key);
+    if (input) input.value = social[key] || "";
+  });
 
   // Logo preview
   updateLogoPreview(brand.logoDataUrl);
@@ -1161,6 +1196,11 @@ async function initBrandEditor() {
     brand.storeName = elements.brandStoreName.value.trim();
     brand.contactEmail = elements.brandEmail.value.trim();
     brand.colors = getCurrentColors();
+    brand.social = {};
+    SOCIAL_KEYS.forEach((key) => {
+      const input = socialInput(key);
+      if (input && input.value.trim()) brand.social[key] = input.value.trim();
+    });
     saveBrand();
     showToast("Storefront settings saved. Refresh the store to see changes.");
   });

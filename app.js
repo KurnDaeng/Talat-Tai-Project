@@ -989,6 +989,63 @@ function applyBrand() {
       }
     });
   }
+
+  renderSocialLinks(brand);
+}
+
+// Default customer contact links. Fill these in (or set them in the admin
+// Storefront editor) so the "Contact us" buttons appear on the Profile tab.
+const DEFAULT_SOCIAL = { facebook: "", line: "", telegram: "", viber: "" };
+
+const SOCIAL_PLATFORMS = [
+  { key: "facebook", label: "Facebook", color: "#1877f2" },
+  { key: "line", label: "LINE", color: "#06c755" },
+  { key: "telegram", label: "Telegram", color: "#229ed9" },
+  { key: "viber", label: "Viber", color: "#7360f2" },
+];
+
+function socialHref(key, value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  if (/^(https?:|viber:|tel:|mailto:)/i.test(raw)) return raw;
+  switch (key) {
+    case "telegram":
+      return `https://t.me/${raw.replace(/^@/, "")}`;
+    case "line":
+      return `https://line.me/R/ti/p/${raw.replace(/^@/, "~")}`;
+    case "viber":
+      return `viber://chat?number=${raw.replace(/[^0-9+]/g, "")}`;
+    case "facebook":
+      return `https://facebook.com/${raw.replace(/^@/, "")}`;
+    default:
+      return raw;
+  }
+}
+
+function renderSocialLinks(brand) {
+  const card = document.querySelector("#socialCard");
+  const wrap = document.querySelector("#socialLinks");
+  if (!card || !wrap) return;
+  const social = { ...DEFAULT_SOCIAL, ...(brand?.social || {}) };
+  const items = SOCIAL_PLATFORMS.map((platform) => ({
+    ...platform,
+    href: socialHref(platform.key, social[platform.key]),
+  })).filter((platform) => platform.href);
+  if (!items.length) {
+    card.hidden = true;
+    wrap.innerHTML = "";
+    return;
+  }
+  card.hidden = false;
+  wrap.innerHTML = items
+    .map(
+      (platform) => `
+        <a class="social-link" href="${platform.href}" target="_blank" rel="noreferrer noopener"
+          style="--social:${platform.color}">
+          <span class="social-dot" aria-hidden="true"></span>${platform.label}
+        </a>`,
+    )
+    .join("");
 }
 
 initializeStorefront();

@@ -123,6 +123,7 @@ window.TALAT_TAI_TRANSLATIONS = {
     languageLabel: "Language",
     aboutSection: "About us",
     helpSection: "Help",
+    socialSection: "Contact us",
   },
   th: {
     customerLoginEyebrow: "ยินดีต้อนรับสู่ TALAT TAI",
@@ -243,6 +244,7 @@ window.TALAT_TAI_TRANSLATIONS = {
     languageLabel: "ภาษา",
     aboutSection: "เกี่ยวกับเรา",
     helpSection: "ความช่วยเหลือ",
+    socialSection: "ติดต่อเรา",
   },
   mm: {
     customerLoginEyebrow: "TALAT TAI မှ ကြိုဆိုပါသည်",
@@ -364,6 +366,7 @@ window.TALAT_TAI_TRANSLATIONS = {
     languageLabel: "ဘာသာစကား",
     aboutSection: "ကျွန်ုပ်တို့အကြောင်း",
     helpSection: "အကူအညီ",
+    socialSection: "ဆက်သွယ်ရန်",
   },
 };
 
@@ -401,6 +404,7 @@ window.TALAT_TAI_TEXT_GROUPS = [
       { key: "languageLabel", label: "Profile: Language label", type: "input" },
       { key: "aboutSection", label: "Profile: About heading", type: "input" },
       { key: "helpSection", label: "Profile: Help heading", type: "input" },
+      { key: "socialSection", label: "Profile: Contact heading", type: "input" },
     ],
   },
   {
