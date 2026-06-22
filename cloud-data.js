@@ -107,6 +107,7 @@
       shippingFee: Number(settingsRow?.shipping_fee ?? 60),
       freeShippingAt: Number(settingsRow?.free_shipping_at ?? 1500),
       paymentQr,
+      brand: settingsRow?.brand || null,
       social: {
         facebook: settingsRow?.social_facebook || "",
         line: settingsRow?.social_line || "",
@@ -114,6 +115,18 @@
         viber: settingsRow?.social_viber || "",
       },
     };
+  }
+
+  // Publish the whole storefront editor (texts, logo, colours, name, social)
+  // so every customer sees the same branding.
+  async function saveBrand(brand) {
+    requireCloud();
+    const { error } = await client.from("store_settings").upsert({
+      id: true,
+      brand: brand || {},
+      updated_at: new Date().toISOString(),
+    });
+    if (error) throw error;
   }
 
   async function saveSocial(social) {
@@ -360,6 +373,7 @@
     deleteProduct,
     saveSettings,
     saveSocial,
+    saveBrand,
     savePaymentQr,
     updateOrder,
     reviewOrder,

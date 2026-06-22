@@ -939,6 +939,11 @@ function applyBrand() {
   } catch {
     brand = {};
   }
+  // Cloud branding (set by the admin) is the source of truth for all customers;
+  // fall back to this device's saved brand only when the cloud has none.
+  if (STORE_CONFIG.brand && typeof STORE_CONFIG.brand === "object") {
+    brand = STORE_CONFIG.brand;
+  }
 
   // Apply CSS color variables
   const colors = brand.colors || {};

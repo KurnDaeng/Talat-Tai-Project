@@ -167,6 +167,12 @@ async function showDashboard() {
   } catch (error) {
     showToast(error.message);
   }
+  // Load the published branding from the cloud so the editor shows what
+  // customers currently see.
+  if (CLOUD.enabled && settings && settings.brand) {
+    brand = settings.brand;
+    localStorage.setItem(BRAND_KEY, JSON.stringify(brand));
+  }
   renderAll();
   initBrandEditor();
   initAdminNav();
@@ -1257,15 +1263,15 @@ async function initBrandEditor() {
       if (input && input.value.trim()) brand.social[key] = input.value.trim();
     });
     saveBrand();
-    // Sync contact links to the cloud so every customer sees them.
-    if (CLOUD.enabled && CLOUD.saveSocial) {
+    // Publish the whole storefront editor to the cloud so every customer sees it.
+    if (CLOUD.enabled && CLOUD.saveBrand) {
       try {
-        await CLOUD.saveSocial(brand.social);
-        showToast("Saved. Contact links are now live for all customers.");
+        await CLOUD.saveBrand(brand);
+        showToast("Saved. Your storefront is now live for all customers.");
         return;
       } catch (error) {
         showToast(
-          "Saved on this device. To publish contact links to everyone, add the social columns in Supabase first.",
+          "Saved on this device. Add the 'brand' column in Supabase to publish to all customers.",
         );
         return;
       }
