@@ -704,6 +704,14 @@ elements.customerLogoutButton.addEventListener("click", async () => {
   currentCustomer = null;
   lastCustomerDetails = {};
   localStorage.removeItem(CUSTOMER_STORAGE_KEY);
+  // Clear this device's cart and favourites so the next account starts fresh
+  // and never inherits the previous customer's data.
+  cart = [];
+  wishlist = [];
+  saveCart();
+  saveWishlist();
+  renderCart();
+  renderProducts();
   elements.customerLoginForm.reset();
   showCustomerStore();
 });
@@ -833,10 +841,11 @@ function orderStatusInfo(order) {
 
 function customerOrders() {
   const all = readJson(ORDERS_STORAGE_KEY, []);
-  const phone = currentCustomer?.phone;
-  if (!phone) return all;
-  const mine = all.filter((order) => (order.customer?.phone || "") === phone);
-  return mine.length ? mine : all;
+  const phone = (currentCustomer?.phone || "").trim();
+  // Strictly show only this customer's own orders. Never fall back to all
+  // orders, or a different account on the same device would see them.
+  if (!phone) return [];
+  return all.filter((order) => (order.customer?.phone || "").trim() === phone);
 }
 
 function renderOrders() {
