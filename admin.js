@@ -514,7 +514,16 @@ function renderOrders() {
     .map((order) => {
       const customer = order.customer || {};
       const items = (order.items || [])
-        .map((item) => `<span>${localized(item.name)} × ${item.quantity}</span>`)
+        .map((item) => {
+          const product = products.find((entry) => entry.id === item.id);
+          const image = product?.image?.dataUrl || item.image || null;
+          const bg = product?.background || item.background || "#e4c453";
+          const title = `${localized(item.name)} × ${item.quantity}`;
+          const thumb = image
+            ? `<img class="order-item-thumb" src="${image}" alt="" />`
+            : `<span class="order-item-thumb is-placeholder" style="--thumb-bg:${bg}"></span>`;
+          return `<div class="order-line">${thumb}<span>${title}</span></div>`;
+        })
         .join("");
       const paymentStatus =
         order.paymentStatus || (order.status === "paid" ? "approved" : order.status) || "pending_review";

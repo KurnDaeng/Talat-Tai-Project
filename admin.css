@@ -667,8 +667,27 @@ th {
 
 .order-items {
   display: grid;
-  gap: 4px;
+  gap: 8px;
   min-width: 210px;
+}
+
+.order-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.order-item-thumb {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.order-item-thumb.is-placeholder {
+  background: var(--thumb-bg, #e4c453);
 }
 
 .toast {
