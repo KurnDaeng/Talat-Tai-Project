@@ -1152,8 +1152,34 @@ function renderProfile() {
 
 document.querySelector("#bottomNav").addEventListener("click", (event) => {
   const button = event.target.closest(".bottom-nav-item");
-  if (button) showPage(button.dataset.page);
+  if (button) {
+    showPage(button.dataset.page);
+    closeNavDrawer();
+  }
 });
+
+const navToggle = document.querySelector("#navToggle");
+const navBackdrop = document.querySelector("#navBackdrop");
+
+function openNavDrawer() {
+  document.body.classList.add("nav-open");
+  navToggle.setAttribute("aria-expanded", "true");
+}
+
+function closeNavDrawer() {
+  document.body.classList.remove("nav-open");
+  navToggle.setAttribute("aria-expanded", "false");
+}
+
+navToggle.addEventListener("click", () => {
+  if (document.body.classList.contains("nav-open")) {
+    closeNavDrawer();
+  } else {
+    openNavDrawer();
+  }
+});
+
+navBackdrop.addEventListener("click", closeNavDrawer);
 
 document.querySelector("#profileLanguage").addEventListener("change", (event) => {
   language = event.target.value;
@@ -1179,7 +1205,9 @@ elements.customerForm.addEventListener("submit", async (event) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  if (elements.productDetailModal.classList.contains("open")) {
+  if (document.body.classList.contains("nav-open")) {
+    closeNavDrawer();
+  } else if (elements.productDetailModal.classList.contains("open")) {
     closeProductDetail();
   } else if (elements.checkoutModal.classList.contains("open")) {
     closeCheckout();

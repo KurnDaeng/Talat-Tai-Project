@@ -56,10 +56,15 @@
     </div>
 
     <header class="site-header">
-      <a class="brand" href="#" aria-label="TALAT TAI home">
-        <img class="brand-logo" src="assets/talat-tai-logo.png" alt="" />
-        <span>TALAT TAI</span>
-      </a>
+      <div class="header-left">
+        <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="bottomNav">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <a class="brand" href="#" aria-label="TALAT TAI home">
+          <img class="brand-logo" src="assets/talat-tai-logo.png" alt="" />
+          <span>TALAT TAI</span>
+        </a>
+      </div>
       <nav class="desktop-nav" aria-label="Main navigation">
         <a href="#shop" data-i18n="navShop">Shop</a>
         <a href="#story" data-i18n="navStory">Our story</a>
@@ -192,6 +197,7 @@
       </section>
     </main>
 
+    <div class="nav-backdrop" id="navBackdrop"></div>
     <nav class="bottom-nav" aria-label="Main navigation" id="bottomNav">
       <button class="bottom-nav-item active" data-page="home" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" /><path d="M5 10v9h14v-9" /></svg>
