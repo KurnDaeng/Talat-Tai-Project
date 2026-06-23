@@ -555,6 +555,9 @@ async function saveOrder(reference, receipt) {
         price: product.price,
         quantity: item.quantity,
         total: product.price * item.quantity,
+        image: product.image?.dataUrl || null,
+        background: product.background || "#e4c453",
+        color: product.color || "#a62f27",
       };
     })
     .filter(Boolean);
@@ -778,7 +781,43 @@ function showPage(page) {
     btn.classList.toggle("active", btn.dataset.page === page);
   });
   renderActivePage();
+  if (page === "orders") refreshOrderStatuses();
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Pull the latest payment/fulfillment status from the cloud so the customer
+// sees admin approve/reject decisions instead of a frozen "pending review".
+async function refreshOrderStatuses() {
+  if (!CLOUD.enabled || !CLOUD.getOrdersStatus) return;
+  const local = readJson(ORDERS_STORAGE_KEY, []);
+  if (!local.length) return;
+  let statuses;
+  try {
+    statuses = await CLOUD.getOrdersStatus(local.map((order) => order.reference));
+  } catch {
+    return;
+  }
+  const byRef = {};
+  (statuses || []).forEach((row) => {
+    byRef[row.reference] = row;
+  });
+  let changed = false;
+  local.forEach((order) => {
+    const row = byRef[order.reference];
+    if (!row) return;
+    if (row.payment_status && order.paymentStatus !== row.payment_status) {
+      order.paymentStatus = row.payment_status;
+      changed = true;
+    }
+    if (row.fulfillment_status && order.fulfillmentStatus !== row.fulfillment_status) {
+      order.fulfillmentStatus = row.fulfillment_status;
+      changed = true;
+    }
+  });
+  if (changed) {
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(local));
+    if (activePage === "orders") renderOrders();
+  }
 }
 
 function orderStatusInfo(order) {
@@ -828,6 +867,17 @@ function renderOrders() {
              <span>${text("orderReceiptLabel")}</span>
            </a>`
         : "";
+      const itemThumbs = (order.items || [])
+        .map((item) => {
+          const product = productById(item.id);
+          const image = item.image || product?.image?.dataUrl || "";
+          const bg = item.background || product?.background || "#e4c453";
+          const title = `${localized(item.name)} × ${item.quantity}`;
+          return image
+            ? `<img class="order-item-thumb" src="${image}" alt="${title}" title="${title}" />`
+            : `<span class="order-item-thumb is-placeholder" style="--thumb-bg:${bg}" title="${title}"></span>`;
+        })
+        .join("");
       return `
         <article class="order-card">
           <div class="order-card-top">
@@ -835,6 +885,7 @@ function renderOrders() {
             <span class="order-status ${info.cls}">${info.label}</span>
           </div>
           <div class="order-date">${date} · ${count} ${text("orderItemsLabel")}</div>
+          <div class="order-item-thumbs">${itemThumbs}</div>
           ${receiptMarkup}
           <div class="order-card-foot">
             <span>${order.paymentMethod || ""}</span>

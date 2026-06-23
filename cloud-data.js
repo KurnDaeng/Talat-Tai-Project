@@ -179,6 +179,16 @@
     return data.session;
   }
 
+  // Current status for a customer's own order references, so their "My Orders"
+  // reflects admin approve/reject decisions.
+  async function getOrdersStatus(references) {
+    requireCloud();
+    if (!references || !references.length) return [];
+    const { data, error } = await client.rpc("get_orders_status", { p_refs: references });
+    if (error) throw error;
+    return data || [];
+  }
+
   // Establish a lightweight anonymous Supabase session so guest customers
   // (name + phone sign-in) can still write their orders to the cloud, letting
   // the admin see them and get notified across devices.
@@ -376,6 +386,7 @@
     getSettings,
     getSession,
     signInAnonymous,
+    getOrdersStatus,
     sendMagicLink,
     signInAdmin,
     isAdmin,
