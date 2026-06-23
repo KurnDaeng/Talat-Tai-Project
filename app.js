@@ -559,14 +559,22 @@ async function saveOrder(reference, receipt) {
     })
     .filter(Boolean);
 
-  // Only use the cloud order flow when a real Supabase session exists. With the
-  // simple name+phone sign-in there is no session, so orders are saved locally.
+  // Send orders to the cloud so the admin sees them on any device. Guests use
+  // the simple name+phone sign-in (no session), so fall back to an anonymous
+  // Supabase session just for writing the order.
   let cloudSession = null;
   if (CLOUD.enabled) {
     try {
       cloudSession = await CLOUD.getSession();
     } catch {
       cloudSession = null;
+    }
+    if (!cloudSession && CLOUD.signInAnonymous) {
+      try {
+        cloudSession = await CLOUD.signInAnonymous();
+      } catch {
+        cloudSession = null;
+      }
     }
   }
 

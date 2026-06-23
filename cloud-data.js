@@ -179,6 +179,18 @@
     return data.session;
   }
 
+  // Establish a lightweight anonymous Supabase session so guest customers
+  // (name + phone sign-in) can still write their orders to the cloud, letting
+  // the admin see them and get notified across devices.
+  async function signInAnonymous() {
+    if (!client) return null;
+    const { data: current } = await client.auth.getSession();
+    if (current?.session) return current.session;
+    const { data, error } = await client.auth.signInAnonymously();
+    if (error) throw error;
+    return data.session;
+  }
+
   async function sendMagicLink(email, name) {
     requireCloud();
     const redirectTo = window.location.href.split("#")[0].split("?")[0];
@@ -363,6 +375,7 @@
     getProducts,
     getSettings,
     getSession,
+    signInAnonymous,
     sendMagicLink,
     signInAdmin,
     isAdmin,
