@@ -2804,3 +2804,35 @@ body.signed-out .bottom-nav {
     padding: 22px;
   }
 }
+
+/* Promo code at checkout */
+.promo-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.promo-row input {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+}
+
+.promo-row .secondary-button {
+  min-height: 46px;
+  padding: 0 18px;
+}
+
+.promo-status {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.promo-status.ok { color: var(--green); }
+.promo-status.error { color: var(--terracotta); }
+.discount-line strong { color: var(--green); }

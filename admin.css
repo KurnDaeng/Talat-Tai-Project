@@ -1052,3 +1052,36 @@ th {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* Promo codes list */
+.promo-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.promo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.promo-item strong {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.promo-item span {
+  flex: 1;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.promo-item .ghost-button {
+  min-height: 34px;
+  padding: 0 12px;
+}

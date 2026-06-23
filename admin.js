@@ -1134,8 +1134,41 @@ function renderBrandForm() {
   elements.colorTerracotta.value = colors.terracotta;
   updateSwatches(colors);
 
+  renderPromoList();
+
   // Text fields (default to English)
   renderTextFields("en");
+}
+
+function renderPromoList() {
+  const list = document.querySelector("#promoList");
+  if (!list) return;
+  const promos = brand.promos || [];
+  if (!promos.length) {
+    list.innerHTML = `<p class="field-label">No promo codes yet.</p>`;
+    return;
+  }
+  list.innerHTML = promos
+    .map(
+      (promo, index) => `
+        <div class="promo-item">
+          <strong>${escapeHtml(promo.code)}</strong>
+          <span>${promo.type === "percent" ? `${promo.value}%` : `฿${promo.value}`} off</span>
+          <button class="ghost-button danger" type="button" data-remove-promo="${index}">Remove</button>
+        </div>`,
+    )
+    .join("");
+}
+
+async function persistBrandPromos() {
+  saveBrand();
+  if (CLOUD.enabled && CLOUD.saveBrand) {
+    try {
+      await CLOUD.saveBrand(brand);
+    } catch {
+      /* keep local copy if the cloud save fails */
+    }
+  }
 }
 
 function updateLogoPreview(dataUrl) {
@@ -1259,6 +1292,40 @@ async function initBrandEditor() {
   if (!elements.saveBrandButton) return;
 
   renderBrandForm();
+
+  const addPromoButton = document.querySelector("#addPromoButton");
+  if (addPromoButton && !addPromoButton.dataset.bound) {
+    addPromoButton.dataset.bound = "1";
+    addPromoButton.addEventListener("click", async () => {
+      const code = document.querySelector("#promoCode").value.trim();
+      const type = document.querySelector("#promoType").value;
+      const value = Number(document.querySelector("#promoValue").value);
+      if (!code || !(value > 0)) {
+        showToast("Enter a code and a value above 0.");
+        return;
+      }
+      if (!brand.promos) brand.promos = [];
+      if (brand.promos.some((promo) => promo.code.toLowerCase() === code.toLowerCase())) {
+        showToast("That code already exists.");
+        return;
+      }
+      brand.promos.push({ code, type, value, active: true });
+      document.querySelector("#promoCode").value = "";
+      document.querySelector("#promoValue").value = "";
+      renderPromoList();
+      await persistBrandPromos();
+      showToast("Promo code added and live.");
+    });
+
+    document.querySelector("#promoList").addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-remove-promo]");
+      if (!button) return;
+      brand.promos.splice(Number(button.dataset.removePromo), 1);
+      renderPromoList();
+      await persistBrandPromos();
+      showToast("Promo code removed.");
+    });
+  }
 
   elements.saveBrandButton.addEventListener("click", async () => {
     collectTextFields();

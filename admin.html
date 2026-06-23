@@ -334,6 +334,36 @@
             </div>
           </div>
 
+          <!-- Promo codes -->
+          <div class="settings-card brand-editor-card">
+            <p class="eyebrow">Marketing</p>
+            <h3>Promo codes</h3>
+            <p class="field-label" style="font-weight:500">
+              Customers enter these at checkout for a discount. Saved instantly.
+            </p>
+            <div class="form-columns">
+              <label>
+                Code
+                <input id="promoCode" type="text" placeholder="SAVE10" />
+              </label>
+              <label>
+                Type
+                <select id="promoType">
+                  <option value="percent">Percent %</option>
+                  <option value="fixed">Fixed ฿</option>
+                </select>
+              </label>
+              <label>
+                Value
+                <input id="promoValue" type="number" min="0" step="1" placeholder="10" />
+              </label>
+            </div>
+            <div class="button-row">
+              <button class="secondary-button" id="addPromoButton" type="button">Add code</button>
+            </div>
+            <div class="promo-list" id="promoList"></div>
+          </div>
+
           <!-- Colors -->
           <div class="settings-card brand-editor-card">
             <p class="eyebrow">Colors</p>

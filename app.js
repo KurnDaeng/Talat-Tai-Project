@@ -188,8 +188,39 @@ function shippingCost() {
   return subtotal >= STORE_CONFIG.freeShippingAt ? 0 : STORE_CONFIG.shippingFee;
 }
 
+let appliedPromo = null;
+
+function findPromo(code) {
+  const clean = String(code || "").trim().toLowerCase();
+  if (!clean) return null;
+  let promos = STORE_CONFIG.brand?.promos;
+  if (!promos) {
+    try {
+      promos = (JSON.parse(localStorage.getItem(BRAND_STORAGE_KEY)) || {}).promos;
+    } catch {
+      promos = null;
+    }
+  }
+  promos = promos || [];
+  return (
+    promos.find(
+      (promo) => promo.active !== false && String(promo.code || "").toLowerCase() === clean,
+    ) || null
+  );
+}
+
+function discountAmount() {
+  if (!appliedPromo) return 0;
+  const subtotal = cartSubtotal();
+  let value =
+    appliedPromo.type === "percent"
+      ? (subtotal * Number(appliedPromo.value || 0)) / 100
+      : Number(appliedPromo.value || 0);
+  return Math.max(0, Math.min(Math.round(value), subtotal));
+}
+
 function cartTotal() {
-  return cartSubtotal() + shippingCost();
+  return Math.max(0, cartSubtotal() + shippingCost() - discountAmount());
 }
 
 function saveCart() {
@@ -328,6 +359,13 @@ function renderCheckoutSummary() {
     .join("");
 
   elements.checkoutSubtotal.textContent = money(cartSubtotal());
+  const discount = discountAmount();
+  const discountRow = document.querySelector("#checkoutDiscountRow");
+  if (discountRow) {
+    discountRow.hidden = discount <= 0;
+    const discountEl = document.querySelector("#checkoutDiscount");
+    if (discountEl) discountEl.textContent = `-${money(discount)}`;
+  }
   const freeShipping = language === "th" ? "ฟรี" : language === "mm" ? "အခမဲ့" : "Free";
   elements.checkoutShipping.textContent =
     shippingCost() === 0 && cart.length > 0 ? freeShipping : money(shippingCost());
@@ -547,6 +585,11 @@ async function createPayment() {
     ...(currentCustomer || {}),
     ...Object.fromEntries(new FormData(elements.customerForm)),
   };
+  if (appliedPromo && discountAmount() > 0) {
+    lastCustomerDetails.promoCode = appliedPromo.code;
+    lastCustomerDetails.discount = discountAmount();
+    lastCustomerDetails.amountToPay = cartTotal();
+  }
   if (STORE_CONFIG.paymentMode === "demo") {
     showCheckoutStep(2);
     return;
@@ -695,6 +738,11 @@ async function saveOrder(reference, receipt) {
 function resetOrder() {
   cart = [];
   saveCart();
+  appliedPromo = null;
+  const promoInput = document.querySelector("#promoInput");
+  const promoStatus = document.querySelector("#promoStatus");
+  if (promoInput) promoInput.value = "";
+  if (promoStatus) promoStatus.hidden = true;
   renderProducts();
   renderCart();
   elements.customerForm.reset();
@@ -711,6 +759,10 @@ function applyLanguage() {
     if (translations[language][key]) {
       element.innerHTML = translations[language][key];
     }
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    const value = translations[language][element.dataset.i18nPlaceholder];
+    if (value) element.setAttribute("placeholder", value);
   });
   elements.languageSelect.value = language;
   localStorage.setItem("talat-tai-language", language);
@@ -819,6 +871,24 @@ elements.productDetailModal.addEventListener("click", (event) => {
     if (detailProductId) addToCart(detailProductId, detailQty);
     closeProductDetail();
   }
+});
+
+document.querySelector("#promoForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = document.querySelector("#promoInput");
+  const status = document.querySelector("#promoStatus");
+  const promo = findPromo(input.value);
+  if (promo) {
+    appliedPromo = promo;
+    status.textContent = `✓ ${text("promoApplied")} (${input.value.trim().toUpperCase()})`;
+    status.className = "promo-status ok";
+  } else {
+    appliedPromo = null;
+    status.textContent = text("promoInvalid");
+    status.className = "promo-status error";
+  }
+  status.hidden = false;
+  renderCheckoutSummary();
 });
 
 elements.cartItems.addEventListener("click", (event) => {

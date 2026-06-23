@@ -373,10 +373,19 @@
         <aside class="checkout-summary">
           <h3 data-i18n="orderSummary">Order summary</h3>
           <div id="checkoutItems"></div>
+          <form class="promo-row" id="promoForm">
+            <input id="promoInput" type="text" placeholder="Promo code" data-i18n-placeholder="promoPlaceholder" autocomplete="off" />
+            <button class="secondary-button" type="submit" data-i18n="promoApply">Apply</button>
+          </form>
+          <p class="promo-status" id="promoStatus" hidden></p>
           <div class="checkout-totals">
             <div>
               <span data-i18n="subtotal">Subtotal</span>
               <strong id="checkoutSubtotal">฿0</strong>
+            </div>
+            <div id="checkoutDiscountRow" class="discount-line" hidden>
+              <span data-i18n="discountLabel">Discount</span>
+              <strong id="checkoutDiscount">-฿0</strong>
             </div>
             <div>
               <span data-i18n="delivery">Delivery</span>
