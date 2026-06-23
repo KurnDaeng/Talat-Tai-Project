@@ -2574,3 +2574,32 @@ body.signed-out .bottom-nav {
   border-color: var(--social, var(--green));
   background: rgba(0, 0, 0, 0.03);
 }
+
+/* Receipt slip shown on the customer's My Orders cards */
+.order-receipt {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+}
+
+.order-receipt img {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.order-receipt span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.order-receipt:hover {
+  border-color: var(--green);
+}

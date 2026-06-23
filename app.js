@@ -598,6 +598,7 @@ async function saveOrder(reference, receipt) {
       paymentMethodKey: selectedPaymentMethod,
       customer: lastCustomerDetails,
       items: orderItems,
+      receipt,
       subtotal: cartSubtotal(),
       shipping: shippingCost(),
       total: cartTotal(),
@@ -820,6 +821,13 @@ function renderOrders() {
             day: "numeric",
           })
         : "";
+      const receiptUrl = order.receipt?.dataUrl || "";
+      const receiptMarkup = receiptUrl
+        ? `<a class="order-receipt" href="${receiptUrl}" target="_blank" rel="noreferrer noopener">
+             <img src="${receiptUrl}" alt="${text("orderReceiptLabel")} ${order.reference}" />
+             <span>${text("orderReceiptLabel")}</span>
+           </a>`
+        : "";
       return `
         <article class="order-card">
           <div class="order-card-top">
@@ -827,6 +835,7 @@ function renderOrders() {
             <span class="order-status ${info.cls}">${info.label}</span>
           </div>
           <div class="order-date">${date} · ${count} ${text("orderItemsLabel")}</div>
+          ${receiptMarkup}
           <div class="order-card-foot">
             <span>${order.paymentMethod || ""}</span>
             <strong>${money(order.total || 0)}</strong>
