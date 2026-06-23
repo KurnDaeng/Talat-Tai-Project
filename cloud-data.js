@@ -189,6 +189,16 @@
     return data || [];
   }
 
+  // A customer's full order history by phone number, so they see the same
+  // orders (and live status) on any device.
+  async function getCustomerOrders(phone) {
+    requireCloud();
+    if (!phone) return [];
+    const { data, error } = await client.rpc("get_customer_orders", { p_phone: phone });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  }
+
   // Establish a lightweight anonymous Supabase session so guest customers
   // (name + phone sign-in) can still write their orders to the cloud, letting
   // the admin see them and get notified across devices.
@@ -387,6 +397,7 @@
     getSession,
     signInAnonymous,
     getOrdersStatus,
+    getCustomerOrders,
     sendMagicLink,
     signInAdmin,
     isAdmin,

@@ -689,6 +689,7 @@ elements.customerLoginForm.addEventListener("submit", (event) => {
     signedInAt: new Date().toISOString(),
   };
   localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(currentCustomer));
+  ordersView = null;
   showCustomerStore();
   showPage("home");
 });
@@ -703,6 +704,7 @@ elements.customerLogoutButton.addEventListener("click", async () => {
   }
   currentCustomer = null;
   lastCustomerDetails = {};
+  ordersView = null;
   localStorage.removeItem(CUSTOMER_STORAGE_KEY);
   // Clear this device's cart and favourites so the next account starts fresh
   // and never inherits the previous customer's data.
@@ -789,7 +791,7 @@ function showPage(page) {
     btn.classList.toggle("active", btn.dataset.page === page);
   });
   renderActivePage();
-  if (page === "orders") refreshOrderStatuses();
+  if (page === "orders") loadCustomerOrders();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -839,13 +841,58 @@ function orderStatusInfo(order) {
   return { cls: "review", label: text("orderStatusReview") };
 }
 
-function customerOrders() {
+// Merged cloud+local order list for the signed-in customer (null until loaded).
+let ordersView = null;
+
+function customerOrdersLocal() {
   const all = readJson(ORDERS_STORAGE_KEY, []);
   const phone = (currentCustomer?.phone || "").trim();
   // Strictly show only this customer's own orders. Never fall back to all
   // orders, or a different account on the same device would see them.
   if (!phone) return [];
   return all.filter((order) => (order.customer?.phone || "").trim() === phone);
+}
+
+function customerOrders() {
+  return ordersView || customerOrdersLocal();
+}
+
+// Fetch the customer's full history from the cloud (by phone) and merge with
+// the local copy, so orders + live status appear on every device. The local
+// copy keeps the uploaded receipt image.
+async function loadCustomerOrders() {
+  const phone = (currentCustomer?.phone || "").trim();
+  const local = customerOrdersLocal();
+  let cloud = [];
+  if (phone && CLOUD.enabled && CLOUD.getCustomerOrders) {
+    try {
+      cloud = await CLOUD.getCustomerOrders(phone);
+    } catch {
+      cloud = [];
+    }
+  }
+  const byRef = {};
+  local.forEach((order) => {
+    byRef[order.reference] = { ...order };
+  });
+  cloud.forEach((order) => {
+    const existing = byRef[order.reference] || {};
+    byRef[order.reference] = {
+      ...existing,
+      reference: order.reference,
+      createdAt: order.created_at || existing.createdAt,
+      paymentStatus: order.payment_status || existing.paymentStatus,
+      fulfillmentStatus: order.fulfillment_status || existing.fulfillmentStatus,
+      paymentMethod: order.payment_method || existing.paymentMethod,
+      total: order.total != null ? order.total : existing.total,
+      items: order.items && order.items.length ? order.items : existing.items,
+      receipt: existing.receipt, // receipt image lives only on the device that ordered
+    };
+  });
+  ordersView = Object.values(byRef).sort(
+    (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+  );
+  if (activePage === "orders") renderOrders();
 }
 
 function renderOrders() {
