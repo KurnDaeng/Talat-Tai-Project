@@ -75,6 +75,8 @@ const elements = {
   checkoutBackdrop: document.querySelector("#checkoutBackdrop"),
   checkoutModal: document.querySelector("#checkoutModal"),
   closeCheckout: document.querySelector("#closeCheckout"),
+  productDetailModal: document.querySelector("#productDetailModal"),
+  detailBackdrop: document.querySelector("#detailBackdrop"),
   customerForm: document.querySelector("#customerForm"),
   checkoutItems: document.querySelector("#checkoutItems"),
   checkoutSubtotal: document.querySelector("#checkoutSubtotal"),
@@ -240,7 +242,7 @@ function renderProducts() {
         const isSoldOut = Number(product.stock) <= 0;
         const faved = wishlist.includes(product.id);
         return `
-        <article class="product-card" style="animation-delay:${index * 60}ms">
+        <article class="product-card" data-product-id="${product.id}" style="animation-delay:${index * 60}ms">
           <div class="product-image${product.image?.dataUrl ? " has-photo" : ""}" style="--image-bg:${product.background};--object-color:${product.color}">
             <span class="product-badge">${isSoldOut ? text("soldOut") : localized(product.badge)}</span>
             <button class="wishlist-toggle${faved ? " active" : ""}" data-wishlist="${product.id}" type="button"
@@ -333,7 +335,7 @@ function renderCheckoutSummary() {
   elements.qrTotal.textContent = money(cartTotal());
 }
 
-function addToCart(id) {
+function addToCart(id, quantity = 1) {
   const product = productById(id);
   if (!product) return;
   if (Number(product.stock) <= 0) {
@@ -342,13 +344,58 @@ function addToCart(id) {
   }
   const existing = cart.find((item) => item.id === id);
   if (existing) {
-    existing.quantity += 1;
+    existing.quantity += quantity;
   } else {
-    cart.push({ id, quantity: 1 });
+    cart.push({ id, quantity });
   }
   saveCart();
   renderCart();
   showToast(`${localized(product.name)} ${text("addedToCart")}`);
+}
+
+// ===== Product detail modal =====
+let detailProductId = null;
+let detailQty = 1;
+
+function openProductDetail(id) {
+  const product = productById(id);
+  if (!product) return;
+  detailProductId = id;
+  detailQty = 1;
+  const isSoldOut = Number(product.stock) <= 0;
+
+  const media = document.querySelector("#detailMedia");
+  media.style.setProperty("--image-bg", product.background || "#e4c453");
+  media.style.setProperty("--object-color", product.color || "#a62f27");
+  media.className = `detail-media${product.image?.dataUrl ? " has-photo" : ""}`;
+  media.innerHTML = product.image?.dataUrl
+    ? `<img src="${product.image.dataUrl}" alt="${localized(product.name)}" />`
+    : `<div class="product-object object-${product.shape}" aria-hidden="true"></div>`;
+
+  const badge = document.querySelector("#detailBadge");
+  const badgeText = isSoldOut ? text("soldOut") : localized(product.badge);
+  badge.textContent = badgeText;
+  badge.hidden = !badgeText;
+  document.querySelector("#detailName").textContent = localized(product.name);
+  document.querySelector("#detailMaker").textContent = localized(product.maker);
+  document.querySelector("#detailPrice").textContent = money(product.price);
+  const description = localized(product.description);
+  const descEl = document.querySelector("#detailDescription");
+  descEl.textContent = description;
+  descEl.hidden = !description;
+  document.querySelector("#detailQty").textContent = detailQty;
+  const addButton = document.querySelector("#detailAddToCart");
+  addButton.disabled = isSoldOut;
+
+  elements.productDetailModal.classList.add("open");
+  elements.productDetailModal.setAttribute("aria-hidden", "false");
+  elements.detailBackdrop.classList.add("open");
+}
+
+function closeProductDetail() {
+  elements.productDetailModal.classList.remove("open");
+  elements.productDetailModal.setAttribute("aria-hidden", "true");
+  elements.detailBackdrop.classList.remove("open");
 }
 
 function changeQuantity(id, change) {
@@ -667,9 +714,18 @@ function applyLanguage() {
   });
   elements.languageSelect.value = language;
   localStorage.setItem("talat-tai-language", language);
+  renderHomeBanner();
   renderProducts();
   renderCart();
   renderActivePage();
+}
+
+function renderHomeBanner() {
+  const el = document.querySelector("#homeBanner");
+  if (!el) return;
+  const message = (translations[language]?.homeBanner || "").trim();
+  el.textContent = message;
+  el.hidden = !message;
 }
 
 function showToast(message) {
@@ -741,7 +797,28 @@ elements.productGrid.addEventListener("click", (event) => {
     return;
   }
   const wishButton = event.target.closest("[data-wishlist]");
-  if (wishButton) toggleWishlist(wishButton.dataset.wishlist);
+  if (wishButton) {
+    toggleWishlist(wishButton.dataset.wishlist);
+    return;
+  }
+  const card = event.target.closest("[data-product-id]");
+  if (card) openProductDetail(card.dataset.productId);
+});
+
+elements.closeDetail = document.querySelector("#closeDetail");
+elements.closeDetail.addEventListener("click", closeProductDetail);
+elements.detailBackdrop.addEventListener("click", closeProductDetail);
+elements.productDetailModal.addEventListener("click", (event) => {
+  const qtyButton = event.target.closest("[data-detail-qty]");
+  if (qtyButton) {
+    detailQty = Math.max(1, detailQty + Number(qtyButton.dataset.detailQty));
+    document.querySelector("#detailQty").textContent = detailQty;
+    return;
+  }
+  if (event.target.closest("#detailAddToCart")) {
+    if (detailProductId) addToCart(detailProductId, detailQty);
+    closeProductDetail();
+  }
 });
 
 elements.cartItems.addEventListener("click", (event) => {
@@ -1032,7 +1109,9 @@ elements.customerForm.addEventListener("submit", async (event) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  if (elements.checkoutModal.classList.contains("open")) {
+  if (elements.productDetailModal.classList.contains("open")) {
+    closeProductDetail();
+  } else if (elements.checkoutModal.classList.contains("open")) {
     closeCheckout();
   } else {
     closeCart();

@@ -45,11 +45,36 @@
           <span>TALAT TAI</span>
         </a>
         <nav aria-label="Admin navigation" id="adminNav">
-          <a href="#overview" data-page="overview" class="active">Overview</a>
-          <a href="#products" data-page="products">Products</a>
-          <a href="#orders" data-page="orders">Orders</a>
-          <a href="#storefront" data-page="storefront">Storefront</a>
-          <a href="#settings" data-page="settings">Settings</a>
+          <a href="#overview" data-page="overview" class="active">
+            <span class="nav-link-main">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              Overview
+            </span>
+          </a>
+          <a href="#products" data-page="products">
+            <span class="nav-link-main">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+              Products
+            </span>
+          </a>
+          <a href="#orders" data-page="orders">
+            <span class="nav-link-main">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+              Orders
+            </span>
+          </a>
+          <a href="#storefront" data-page="storefront">
+            <span class="nav-link-main">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9l1.2-5h13.6L20 9M5 9v11h14V9M4 9h16"/></svg>
+              Storefront
+            </span>
+          </a>
+          <a href="#settings" data-page="settings">
+            <span class="nav-link-main">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.3 1a7 7 0 0 0-1.7-1l-.3-2.6h-4l-.3 2.6a7 7 0 0 0-1.7 1l-2.3-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 1.7 1l.3 2.6h4l.3-2.6a7 7 0 0 0 1.7-1l2.3 1 2-3.4-2-1.5a7 7 0 0 0 .1-1z"/></svg>
+              Settings
+            </span>
+          </a>
         </nav>
         <div class="sidebar-actions">
           <a class="ghost-button" href="index.html">View store</a>
@@ -124,6 +149,18 @@
                 <label class="full-field">
                   Myanmar maker
                   <input name="makerMm" required />
+                </label>
+                <label class="full-field">
+                  Description — English
+                  <textarea name="descEn" rows="2" placeholder="What makes this product special?"></textarea>
+                </label>
+                <label class="full-field">
+                  Description — ไทย
+                  <textarea name="descTh" rows="2"></textarea>
+                </label>
+                <label class="full-field">
+                  Description — မြန်မာ
+                  <textarea name="descMm" rows="2"></textarea>
                 </label>
                 <label>
                   Price THB

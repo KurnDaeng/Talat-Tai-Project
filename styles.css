@@ -2683,3 +2683,124 @@ body.signed-out .bottom-nav {
 .order-delivery-dot.shipped { background: #2f6a96; }
 .order-delivery-dot.fulfilled { background: var(--green); }
 .order-delivery-dot.cancelled { background: var(--terracotta); }
+
+/* Editable home promo banner */
+.home-banner {
+  margin: 22px 6vw 0;
+  padding: 16px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--green), #0f3a2b);
+  color: var(--cream);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  box-shadow: 0 14px 30px rgba(23, 83, 62, 0.18);
+}
+
+@media (max-width: 760px) {
+  .home-banner {
+    margin: 16px 18px 0;
+    font-size: 14px;
+  }
+}
+
+/* ===== Product detail modal ===== */
+.product-detail-modal {
+  position: fixed;
+  z-index: 96;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: min(860px, 92vw);
+  max-height: 88vh;
+  overflow: hidden auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--cream);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -47%) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+.product-detail-modal.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.detail-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 340px;
+  overflow: hidden;
+  background: var(--image-bg, #e4c453);
+}
+
+.detail-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-close {
+  position: absolute;
+  z-index: 3;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 253, 246, 0.9);
+}
+
+.detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 32px;
+}
+
+.detail-badge {
+  position: static;
+  align-self: flex-start;
+}
+
+.detail-maker {
+  margin: 0;
+  color: var(--muted);
+}
+
+.detail-price {
+  font-size: 26px;
+}
+
+.detail-description {
+  margin: 4px 0;
+  color: var(--ink);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .product-detail-modal {
+    grid-template-columns: 1fr;
+    width: 94vw;
+  }
+  .detail-media {
+    min-height: 240px;
+  }
+  .detail-body {
+    padding: 22px;
+  }
+}

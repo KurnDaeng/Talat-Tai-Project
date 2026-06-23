@@ -85,6 +85,7 @@
     <main class="app-main">
       <!-- ===== HOME ===== -->
       <section class="app-page active" id="page-home" data-page="home">
+        <div class="home-banner" id="homeBanner" hidden></div>
         <section class="products-section" id="shop">
           <div class="section-heading">
             <div>
@@ -391,6 +392,27 @@
             <p data-i18n="paymentTrust">Payment status should be verified securely by your payment server.</p>
           </div>
         </aside>
+      </div>
+    </section>
+
+    <div class="modal-backdrop" id="detailBackdrop"></div>
+    <section class="product-detail-modal" id="productDetailModal" aria-hidden="true" aria-labelledby="detailName">
+      <button class="icon-button detail-close" id="closeDetail" type="button" aria-label="Close">×</button>
+      <div class="detail-media" id="detailMedia"></div>
+      <div class="detail-body">
+        <span class="product-badge detail-badge" id="detailBadge"></span>
+        <h2 id="detailName"></h2>
+        <p class="detail-maker" id="detailMaker"></p>
+        <strong class="detail-price" id="detailPrice"></strong>
+        <p class="detail-description" id="detailDescription"></p>
+        <div class="detail-actions">
+          <div class="quantity-control" aria-label="Quantity">
+            <button type="button" data-detail-qty="-1" aria-label="Decrease">−</button>
+            <span id="detailQty">1</span>
+            <button type="button" data-detail-qty="1" aria-label="Increase">+</button>
+          </div>
+          <button class="primary-button" id="detailAddToCart" type="button" data-i18n="addToCartButton">Add to cart</button>
+        </div>
       </div>
     </section>
 

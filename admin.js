@@ -651,6 +651,9 @@ function fillProductForm(product) {
   fields.makerEn.value = product.maker.en || "";
   fields.makerTh.value = product.maker.th || "";
   fields.makerMm.value = product.maker.mm || "";
+  fields.descEn.value = product.description?.en || "";
+  fields.descTh.value = product.description?.th || "";
+  fields.descMm.value = product.description?.mm || "";
   fields.price.value = product.price || 0;
   fields.stock.value = product.stock || 0;
   fields.badgeEn.value = product.badge.en || "";
@@ -691,6 +694,11 @@ function productFromForm() {
       en: form.makerEn.value.trim(),
       th: form.makerTh.value.trim(),
       mm: form.makerMm.value.trim(),
+    },
+    description: {
+      en: form.descEn.value.trim(),
+      th: form.descTh.value.trim(),
+      mm: form.descMm.value.trim(),
     },
     price: Number(form.price.value),
     stock: Number(form.stock.value),

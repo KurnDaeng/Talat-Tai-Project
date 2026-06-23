@@ -1034,3 +1034,21 @@ th {
   font-size: 14px;
   font-weight: 600;
 }
+
+/* Sidebar nav icons */
+.nav-link-main {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.sidebar nav a svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
