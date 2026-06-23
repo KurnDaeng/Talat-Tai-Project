@@ -1085,3 +1085,43 @@ th {
   min-height: 34px;
   padding: 0 12px;
 }
+
+/* Order control: day filter toolbar */
+.orders-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.orders-date-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.orders-date-control input[type="date"] {
+  width: auto;
+  min-height: 42px;
+}
+
+.orders-date-control .day-step {
+  min-height: 42px;
+  padding: 0 14px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.orders-date-control .secondary-button,
+.orders-date-control .ghost-button {
+  min-height: 42px;
+}
+
+.orders-summary {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}

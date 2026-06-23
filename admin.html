@@ -245,6 +245,16 @@
             </div>
             <button class="secondary-button" id="exportButton" type="button">Export data</button>
           </div>
+          <div class="orders-toolbar">
+            <div class="orders-date-control">
+              <button class="ghost-button day-step" id="ordersPrevDay" type="button" aria-label="Previous day">‹</button>
+              <input type="date" id="ordersDate" aria-label="Order date" />
+              <button class="ghost-button day-step" id="ordersNextDay" type="button" aria-label="Next day">›</button>
+              <button class="secondary-button" id="ordersToday" type="button">Today</button>
+              <button class="ghost-button" id="ordersAllDays" type="button">All days</button>
+            </div>
+            <div class="orders-summary" id="ordersSummary"></div>
+          </div>
           <div class="table-card">
             <div class="table-scroller">
               <table>

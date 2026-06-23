@@ -461,13 +461,56 @@ function renderProducts() {
     .join("");
 }
 
+function localDateStr(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+// Order control defaults to today; the calendar lets you review past days.
+let orderDateFilter = localDateStr(new Date());
+
 function renderOrders() {
+  const dateInput = document.querySelector("#ordersDate");
+  if (dateInput && orderDateFilter && dateInput.value !== orderDateFilter) {
+    dateInput.value = orderDateFilter;
+  }
+
+  const visibleOrders = orderDateFilter
+    ? orders.filter((order) => localDateStr(order.createdAt) === orderDateFilter)
+    : orders.slice();
+
+  const summary = document.querySelector("#ordersSummary");
+  if (summary) {
+    if (orderDateFilter) {
+      const label = new Date(`${orderDateFilter}T00:00:00`).toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+      summary.textContent = `${visibleOrders.length} order${visibleOrders.length === 1 ? "" : "s"} on ${label}`;
+    } else {
+      summary.textContent = `${orders.length} order${orders.length === 1 ? "" : "s"} total · all days`;
+    }
+  }
+
   if (orders.length === 0) {
     elements.ordersTable.innerHTML = `<tr><td colspan="7">No orders yet. Complete a demo checkout to see orders here.</td></tr>`;
+    updateOrderBadge();
     return;
   }
 
-  elements.ordersTable.innerHTML = orders
+  if (visibleOrders.length === 0) {
+    elements.ordersTable.innerHTML = `<tr><td colspan="7">No orders on this day. Pick another date, or choose “All days”.</td></tr>`;
+    updateOrderBadge();
+    return;
+  }
+
+  elements.ordersTable.innerHTML = visibleOrders
     .map((order) => {
       const customer = order.customer || {};
       const items = (order.items || [])
@@ -534,6 +577,39 @@ function renderOrders() {
     .join("");
   updateOrderBadge();
 }
+
+function setupOrdersDateFilter() {
+  const dateInput = document.querySelector("#ordersDate");
+  if (!dateInput || dateInput.dataset.bound) return;
+  dateInput.dataset.bound = "1";
+  dateInput.value = orderDateFilter || "";
+
+  dateInput.addEventListener("change", () => {
+    orderDateFilter = dateInput.value || null;
+    renderOrders();
+  });
+  document.querySelector("#ordersToday").addEventListener("click", () => {
+    orderDateFilter = localDateStr(new Date());
+    dateInput.value = orderDateFilter;
+    renderOrders();
+  });
+  document.querySelector("#ordersAllDays").addEventListener("click", () => {
+    orderDateFilter = null;
+    renderOrders();
+  });
+
+  const shiftDay = (delta) => {
+    const base = orderDateFilter ? new Date(`${orderDateFilter}T00:00:00`) : new Date();
+    base.setDate(base.getDate() + delta);
+    orderDateFilter = localDateStr(base);
+    dateInput.value = orderDateFilter;
+    renderOrders();
+  };
+  document.querySelector("#ordersPrevDay").addEventListener("click", () => shiftDay(-1));
+  document.querySelector("#ordersNextDay").addEventListener("click", () => shiftDay(1));
+}
+
+setupOrdersDateFilter();
 
 function renderSettings() {
   const fields = elements.settingsForm.elements;
