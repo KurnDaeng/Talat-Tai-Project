@@ -923,6 +923,19 @@ function renderOrders() {
              <span>${text("orderReceiptLabel")}</span>
            </a>`
         : "";
+      const fulfillKey = {
+        unfulfilled: "fulfillPreparing",
+        packed: "fulfillPacked",
+        shipped: "fulfillShipped",
+        fulfilled: "fulfillDelivered",
+        cancelled: "fulfillCancelled",
+      }[order.fulfillmentStatus];
+      const deliveryMarkup = fulfillKey
+        ? `<div class="order-delivery">
+             <span class="order-delivery-dot ${order.fulfillmentStatus}"></span>
+             ${text("deliveryLabel")}: <strong>${text(fulfillKey)}</strong>
+           </div>`
+        : "";
       const itemThumbs = (order.items || [])
         .map((item) => {
           const product = productById(item.id);
@@ -941,6 +954,7 @@ function renderOrders() {
             <span class="order-status ${info.cls}">${info.label}</span>
           </div>
           <div class="order-date">${date} · ${count} ${text("orderItemsLabel")}</div>
+          ${deliveryMarkup}
           <div class="order-item-thumbs">${itemThumbs}</div>
           ${receiptMarkup}
           <div class="order-card-foot">

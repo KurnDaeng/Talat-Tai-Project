@@ -2656,3 +2656,30 @@ body.signed-out .bottom-nav {
     padding-left: 190px;
   }
 }
+
+/* Delivery status line on My Orders cards */
+.order-delivery {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.order-delivery strong {
+  color: var(--ink);
+}
+
+.order-delivery-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.order-delivery-dot.unfulfilled { background: var(--gold); }
+.order-delivery-dot.packed { background: var(--gold); }
+.order-delivery-dot.shipped { background: #2f6a96; }
+.order-delivery-dot.fulfilled { background: var(--green); }
+.order-delivery-dot.cancelled { background: var(--terracotta); }
