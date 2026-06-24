@@ -269,6 +269,7 @@ function showAdminPage(page) {
 // ===== Order notifications =====
 let knownOrderRefs = null;
 let orderNotifyTimer = null;
+let orderRealtimeChannel = null;
 
 const SEEN_ORDERS_KEY = "talat-tai-admin-seen-orders";
 
@@ -358,28 +359,53 @@ function notifyNewOrders(newOnes) {
   }
 }
 
+// Pull the latest orders and, if any are new, refresh the dashboard and alert
+// the admin. Shared by the realtime listener and the polling fallback.
+async function checkForNewOrders() {
+  let fresh;
+  try {
+    fresh = await fetchLatestOrders();
+  } catch {
+    return;
+  }
+  const newOnes = fresh.filter((order) => !knownOrderRefs.has(order.reference));
+  if (newOnes.length) {
+    orders = fresh;
+    newOnes.forEach((order) => knownOrderRefs.add(order.reference));
+    renderStats();
+    renderOrders();
+    notifyNewOrders(newOnes);
+  }
+}
+
+// Instant notifications: listen for new rows on the orders table. Falls back
+// silently to polling if realtime is unavailable.
+function startOrderRealtime() {
+  if (!CLOUD.enabled || !CLOUD.client || orderRealtimeChannel) return;
+  try {
+    orderRealtimeChannel = CLOUD.client
+      .channel("talat-tai-orders")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "orders" },
+        () => {
+          checkForNewOrders();
+        },
+      )
+      .subscribe();
+  } catch {
+    /* realtime unavailable — the polling timer still covers new orders */
+  }
+}
+
 function startOrderNotifications() {
   knownOrderRefs = new Set(orders.map((order) => order.reference));
   if (window.Notification && Notification.permission === "default") {
     Notification.requestPermission().catch(() => {});
   }
+  startOrderRealtime();
   if (orderNotifyTimer) clearInterval(orderNotifyTimer);
-  orderNotifyTimer = setInterval(async () => {
-    let fresh;
-    try {
-      fresh = await fetchLatestOrders();
-    } catch {
-      return;
-    }
-    const newOnes = fresh.filter((order) => !knownOrderRefs.has(order.reference));
-    if (newOnes.length) {
-      orders = fresh;
-      newOnes.forEach((order) => knownOrderRefs.add(order.reference));
-      renderStats();
-      renderOrders();
-      notifyNewOrders(newOnes);
-    }
-  }, 20000);
+  orderNotifyTimer = setInterval(checkForNewOrders, 20000);
 }
 
 function renderAll() {
