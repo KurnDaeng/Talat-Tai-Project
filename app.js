@@ -273,7 +273,7 @@ function renderProducts() {
         const isSoldOut = Number(product.stock) <= 0;
         const faved = wishlist.includes(product.id);
         return `
-        <article class="product-card" data-product-id="${product.id}" style="animation-delay:${index * 60}ms">
+        <article class="product-card${isSoldOut ? " is-sold-out" : ""}" data-product-id="${product.id}" style="animation-delay:${index * 60}ms">
           <div class="product-image${product.image?.dataUrl ? " has-photo" : ""}" style="--image-bg:${product.background};--object-color:${product.color}">
             <span class="product-badge">${isSoldOut ? text("soldOut") : localized(product.badge)}</span>
             <button class="wishlist-toggle${faved ? " active" : ""}" data-wishlist="${product.id}" type="button"
@@ -282,7 +282,7 @@ function renderProducts() {
               ? `<img class="product-photo" src="${product.image.dataUrl}" alt="${localized(product.name)}" />`
               : `<div class="product-object object-${product.shape}" aria-hidden="true"></div>`}
             <button class="quick-add" data-add-product="${product.id}" type="button"
-              aria-label="Add ${localized(product.name)} to cart" ${isSoldOut ? "disabled" : ""}>+</button>
+              aria-label="Add ${localized(product.name)} to cart">+</button>
           </div>
           <div class="product-details">
             <div>

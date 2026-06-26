@@ -2899,3 +2899,21 @@ body.signed-out .nav-toggle {
 .promo-status.ok { color: var(--green); }
 .promo-status.error { color: var(--terracotta); }
 .discount-line strong { color: var(--green); }
+
+/* Sold-out products: dim the card and grey the add button (clicking shows a
+   "sold out" toast for clear feedback instead of a dead disabled button). */
+.product-card.is-sold-out .product-photo,
+.product-card.is-sold-out .product-object {
+  opacity: 0.5;
+  filter: grayscale(0.4);
+}
+
+.product-card.is-sold-out .quick-add {
+  background: var(--muted);
+  cursor: not-allowed;
+}
+
+.product-card.is-sold-out .product-badge {
+  background: var(--terracotta);
+  color: var(--white);
+}
