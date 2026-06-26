@@ -1144,3 +1144,16 @@ th {
   font-size: 13px;
   font-weight: 700;
 }
+
+/* Admin team: remove button + self marker */
+.admin-remove {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.admin-you {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}

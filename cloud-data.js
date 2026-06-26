@@ -174,6 +174,16 @@
     return data || [];
   }
 
+  // Revoke another account's admin access (the RPC guards against removing
+  // yourself or the final admin).
+  async function removeAdmin(email) {
+    requireCloud();
+    const { error } = await client.rpc("revoke_admin", {
+      target_email: String(email || "").trim().toLowerCase(),
+    });
+    if (error) throw error;
+  }
+
   async function getSession() {
     if (!client) return null;
     const { data, error } = await client.auth.getSession();
@@ -416,5 +426,6 @@
     reviewOrder,
     createAdmin,
     listAdmins,
+    removeAdmin,
   };
 })();

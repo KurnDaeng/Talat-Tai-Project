@@ -211,6 +211,27 @@ async function initAdminTeam() {
       }
     });
   }
+
+  const list = document.querySelector("#adminList");
+  if (list && !list.dataset.bound) {
+    list.dataset.bound = "1";
+    list.addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-remove-admin]");
+      if (!button) return;
+      const email = button.dataset.removeAdmin;
+      if (!confirm(`Remove admin access for ${email}? They will become a normal customer.`)) return;
+      button.disabled = true;
+      try {
+        await CLOUD.removeAdmin(email);
+        showToast("Admin access removed.");
+        await renderAdminList();
+      } catch (error) {
+        showToast(error.message || "Could not remove admin.");
+        button.disabled = false;
+      }
+    });
+  }
+
   renderAdminList();
 }
 
@@ -218,7 +239,11 @@ async function renderAdminList() {
   const list = document.querySelector("#adminList");
   if (!list || !CLOUD.listAdmins) return;
   try {
-    const admins = await CLOUD.listAdmins();
+    const [admins, session] = await Promise.all([
+      CLOUD.listAdmins(),
+      CLOUD.getSession ? CLOUD.getSession() : Promise.resolve(null),
+    ]);
+    const myEmail = (session?.user?.email || "").toLowerCase();
     if (!admins.length) {
       list.innerHTML = "";
       return;
@@ -226,7 +251,14 @@ async function renderAdminList() {
     list.innerHTML =
       `<p class="field-label">Current admins</p>` +
       admins
-        .map((admin) => `<div class="admin-list-row"><span>${escapeHtml(admin.email || "")}</span></div>`)
+        .map((admin) => {
+          const email = admin.email || "";
+          const isSelf = email.toLowerCase() === myEmail;
+          const action = isSelf
+            ? `<span class="admin-you">You</span>`
+            : `<button class="ghost-button danger admin-remove" type="button" data-remove-admin="${escapeHtml(email)}">Remove</button>`;
+          return `<div class="admin-list-row"><span>${escapeHtml(email)}</span>${action}</div>`;
+        })
         .join("");
   } catch {
     list.innerHTML =
