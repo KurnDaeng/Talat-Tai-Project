@@ -776,8 +776,18 @@ function renderHomeBanner() {
   const el = document.querySelector("#homeBanner");
   if (!el) return;
   const message = (translations[language]?.homeBanner || "").trim();
-  el.textContent = message;
   el.hidden = !message;
+  if (!message) {
+    el.innerHTML = "";
+    return;
+  }
+  const safe = message
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  // Duplicate the text so the marquee loops seamlessly as it floats across.
+  const item = `<span class="home-banner-item">${safe}</span>`;
+  el.innerHTML = `<div class="home-banner-track">${item}${item}</div>`;
 }
 
 function showToast(message) {

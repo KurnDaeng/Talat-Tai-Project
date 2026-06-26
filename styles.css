@@ -2750,15 +2750,42 @@ body.signed-out .nav-toggle {
 /* Editable home promo banner */
 .home-banner {
   margin: 22px 6vw 0;
-  padding: 16px 22px;
+  padding: 16px 0;
+  overflow: hidden;
   border-radius: 14px;
   background: linear-gradient(135deg, var(--green), #0f3a2b);
   color: var(--cream);
   font-size: 15px;
   font-weight: 600;
   line-height: 1.5;
-  text-align: center;
   box-shadow: 0 14px 30px rgba(23, 83, 62, 0.18);
+}
+
+/* Floating marquee: the text scrolls continuously right-to-left */
+.home-banner-track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: home-banner-scroll 22s linear infinite;
+}
+
+.home-banner-item {
+  padding-right: 80px;
+}
+
+.home-banner:hover .home-banner-track {
+  animation-play-state: paused;
+}
+
+@keyframes home-banner-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-banner-track {
+    animation: none;
+  }
 }
 
 @media (max-width: 760px) {
